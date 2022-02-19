@@ -1,6 +1,8 @@
-package decision.theory.model;
+package decision.theory.lab1.model;
 
 import decision.theory.lab1.interfaces.model.IMarkProcessResult;
+import decision.theory.lab1.service.DiscreteMarkProcessService;
+import decision.theory.lab1.service.RandomService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -40,7 +42,7 @@ class DiscreteMarkProcessTest {
                         {10.07, 7.86}
                 }
         );
-        IMarkProcessResult result = new DiscreteMarkProcessService().calculate(probabilityData, valueData, 3);
+        IMarkProcessResult result = new DiscreteMarkProcessService(new RandomService()).calculate(probabilityData, valueData, 3);
         assertEquals(
                 new TreeMap<>() {
                     {

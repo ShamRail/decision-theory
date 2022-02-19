@@ -12,4 +12,7 @@ export class DmkComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  updateTableAndGraphView() {
+
+  }
 }

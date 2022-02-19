@@ -1,12 +1,24 @@
-package decision.theory.model;
+package decision.theory.lab1.service;
 
-import decision.theory.lab1.interfaces.model.IMarkProcessService;
 import decision.theory.lab1.interfaces.model.IMarkProcessResult;
+import decision.theory.lab1.interfaces.model.IMarkProcessSourceData;
+import decision.theory.lab1.interfaces.service.IMarkProcessService;
+import decision.theory.lab1.interfaces.service.IRandomService;
+import decision.theory.lab1.model.MarkProcessResult;
+import decision.theory.lab1.model.MarkProcessSourceData;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class DiscreteMarkProcessService implements IMarkProcessService {
+
+    private IRandomService randomService;
+
+    public DiscreteMarkProcessService(IRandomService randomService) {
+        this.randomService = randomService;
+    }
 
     @Override
     public IMarkProcessResult calculate(List<double[][]> probabilityData, List<double[][]> valuesData, int stepAmount) {
@@ -18,6 +30,27 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
         var calculatedTable = calculateExpectedValue(table);
         var processResult = calculateTotalExpectedValue(calculatedTable, stepAmount);
         return prepareResult(processResult, probabilityData);
+    }
+
+    @Override
+    public IMarkProcessSourceData generateSourceData(int statesCount, int strategiesCount,
+                                                     double minV, double maxV) {
+        var probabilities = new ArrayList<double[][]>(strategiesCount);
+        var values = new ArrayList<double[][]>(strategiesCount);
+        for (var k = 0; k < statesCount; k++) {
+            var currentProbabilities = new double[statesCount][statesCount];
+            var currentValues = new double[statesCount][statesCount];
+            for (var i = 0; i < statesCount; i++) {
+                var fullGroup = randomService.generateFullGroup(statesCount);
+                for (var j = 0; j < statesCount; j++) {
+                    currentValues[i][j] = randomService.generate(minV, maxV);
+                }
+                currentProbabilities[i] = fullGroup;
+            }
+            probabilities.add(currentProbabilities);
+            values.add(currentValues);
+        }
+        return new MarkProcessSourceData(probabilities, values);
     }
 
     private List<CalculationRow> formTable(int stateCount, int strategiesCount,

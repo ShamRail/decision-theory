@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DmkService} from "../service/DmkService";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {DmkService, DmkSourceData} from "../service/DmkService";
 
 @Component({
   selector: 'app-dmk-panel',
@@ -10,6 +10,10 @@ export class DmkPanelComponent implements OnInit {
 
   currentState = '';
   currentStrategy = '';
+  minV : any;
+  maxV : any;
+
+  @Output() onDataGenerated: EventEmitter<DmkSourceData> = new EventEmitter<DmkSourceData>();
 
   constructor(
     private dmkService: DmkService
@@ -33,4 +37,15 @@ export class DmkPanelComponent implements OnInit {
   getStates(): String[] {
     return this.dmkService.states;
   }
+
+  updateRange() {
+    this.dmkService.updateRange(this.minV, this.maxV);
+  }
+
+  generateTable() {
+    this.dmkService.generateData().subscribe(data => {
+      this.onDataGenerated.emit(data);
+    });
+  }
+
 }

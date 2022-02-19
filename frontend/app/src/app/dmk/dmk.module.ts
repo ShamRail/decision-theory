@@ -5,6 +5,7 @@ import { DmkRoutingModule } from './dmk-routing.module';
 import { DmkPanelComponent } from './dmk-panel/dmk-panel.component';
 import { DmkComponent } from './dmk.component';
 import {FormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import {FormsModule} from "@angular/forms";
   imports: [
     CommonModule,
     DmkRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
 })
 export class DmkModule { }
