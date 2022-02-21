@@ -1,6 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { VisNetworkService, Data, DataSet, Node, Options, Edge } from 'ngx-vis';
+import {Data, DataSet, Edge, Node, Options, VisNetworkService} from 'ngx-vis';
+import {DmkService} from "../service/DmkService";
 
 @Component({
   selector: 'app-dmk-graph',
@@ -17,24 +18,18 @@ import { VisNetworkService, Data, DataSet, Node, Options, Edge } from 'ngx-vis';
   template: `
     <div class="container">
       <div *ngIf="visNetworkData">
-        <h2>Network</h2>
-        <h3>Basic usage</h3>
         <div
           class="network-canvas"
           [visNetwork]="visNetwork"
           [visNetworkData]="visNetworkData"
           [visNetworkOptions]="visNetworkOptions"
-          (initialized)="networkInitialized()"
         ></div>
-        <button type="button" class="btn btn-default" (click)="addNode()">Add node</button>
-        <p><strong>Note:</strong> Open your dev tools to see the console output when the network receives click events.
-        </p>
       </div>
     </div>
   `
 
 })
-export class DmkGraphComponent implements OnInit, OnDestroy {
+export class DmkGraphComponent implements OnInit {
 
   public visNetwork: string = 'networkId1';
   public visNetworkData: Data = {};
@@ -42,49 +37,72 @@ export class DmkGraphComponent implements OnInit, OnDestroy {
   public edges: DataSet<Edge> = new DataSet();
   public visNetworkOptions: Options = {};
 
-  public constructor(private visNetworkService: VisNetworkService) {
+  public constructor(
+    private dmkService: DmkService,
+    private visNetworkService: VisNetworkService) {
   }
 
-  public addNode(): void {
-    const lastId = this.nodes.length;
-    const newId = this.nodes.length + 1;
-    this.nodes.add({id: newId, label: 'New Node'});
-    this.edges.add({from: lastId, to: newId});
-    this.visNetworkService.fit(this.visNetwork);
-  }
-
-  public networkInitialized(): void {
-    // now we can use the service to register on events
-    this.visNetworkService.on(this.visNetwork, 'click');
-    // open your console/dev tools to see the click params
-    this.visNetworkService.click.subscribe((eventData: any[]) => {
-      if (eventData[0] === this.visNetwork) {
-        console.log(eventData[1]);
-      }
-    });
-  }
+  // public addNode(): void {
+  //   const lastId = this.nodes.length;
+  //   const newId = this.nodes.length + 1;
+  //   this.nodes.add({id: newId, label: 'New Node'});
+  //   this.edges.add({from: lastId, to: newId});
+  //   this.visNetworkService.fit(this.visNetwork);
+  // }
 
   public ngOnInit(): void {
-    this.nodes = new DataSet<Node>([
-      {id: '1', label: 'Node 1'},
-      {id: '2', label: 'Node 2'},
-      {id: '3', label: 'Node 3'},
-      {id: '4', label: 'Node 4'},
-      {id: '5', label: 'Node 5', title: 'Title of Node 5'}
-    ]);
-    this.edges = new DataSet<Edge>([
-      {from: '1', to: '2', label: '123'},
-      {from: '1', to: '3'},
-      {from: '2', to: '4'},
-      {from: '2', to: '5'}
-    ]);
+    // this.nodes = new DataSet<Node>([
+    //   {id: '1', label: 'Node 1'},
+    //   {id: '2', label: 'Node 2'},
+    //   {id: '3', label: 'Node 3'},
+    //   {id: '4', label: 'Node 4'},
+    //   {id: '5', label: 'Node 5', title: 'Title of Node 5'}
+    // ]);
+    // this.edges = new DataSet<Edge>([
+    //   {from: '1', to: '2', label: '123'},
+    //   {from: '1', to: '3'},
+    //   {from: '2', to: '4'},
+    //   {from: '2', to: '5'}
+    // ]);
     this.visNetworkData = {nodes: this.nodes, edges: this.edges};
+    this.visNetworkOptions = {
+      autoResize: true, edges: {
+        arrows: {to: true},
+      }
+    };
 
-    this.visNetworkOptions = {};
-  }
+    this.dmkService.subscribeOnSourceDataGenerated((data) => {
+      this.nodes.clear();
+      this.edges.clear();
+      const matrix = data.probabilities[0];
+      for (let i = 0; i < matrix.length; i++) {
+        this.nodes.add({id: i.toString(), label: i.toString()})
+      }
+      for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+          const val = matrix[i][j];
+          if (val > 0.01) {
+            this.edges.add(
+              {from: i.toString(), to: j.toString(), label: val.toPrecision(2), arrows: {
+                to: true
+              }},
+            )
+          }
+        }
+      }
+      // this.visNetworkData = {nodes: newNodes, edges: newEdges};
+      this.visNetworkService.redraw(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+      // this.visNetworkService.fit(this.visNetwork);
+    });
 
-  public ngOnDestroy(): void {
-    this.visNetworkService.off(this.visNetwork, 'click');
   }
 
 }

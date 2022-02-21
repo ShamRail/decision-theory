@@ -1,34 +1,44 @@
 <div class="container">
-  <table class="table table-bordered">
-    <thead>
-    <tr class="table-primary">
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>
-        <input type="text" class="form-control border-0" value="Tom">
-      </td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-    </tbody>
-  </table>
-
+  <div>
+    <h6>Матрицы переходных вероятностей</h6>
+    <table class="table table-bordered text-center table-sm" *ngFor="let table of data.probabilities; let k = index;">
+      <thead>
+      <tr class="table-primary">
+        <th scope="col">{{ k }}</th>
+        <th scope="col" *ngFor="let column of table; let i = index">
+          {{ i }}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of table; let i = index">
+        <th scope="row"> {{ i }} </th>
+        <td *ngFor="let cell of row" class="p-0">
+          <input type="text" class="form-control border-0 w-25" value="{{ cell.toPrecision(3) }}">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <h6>Матрицы доходностей</h6>
+    <table class="table table-bordered text-center table-sm" *ngFor="let table of data.values; let k = index;">
+      <thead>
+      <tr class="table-primary">
+        <th scope="col">{{ k }}</th>
+        <th scope="col" *ngFor="let column of table; let i = index">
+          {{ i }}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of table; let i = index">
+        <th scope="row"> {{ i }} </th>
+        <td *ngFor="let cell of row" class="p-0">
+          <input type="text" class="form-control border-0 w-25" value="{{ cell.toPrecision(3) }}">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

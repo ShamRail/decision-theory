@@ -1,14 +1,22 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {environment} from "../../../environments/environment";
 
 export class DmkSourceData {
 
   constructor(
-    probabilities: number[][][],
-    values: number[][][]
+    private _probabilities: number[][][],
+    private _values: number[][][]
   ) { }
+
+  get probabilities(): number[][][] {
+    return this._probabilities;
+  }
+
+  get values(): number[][][] {
+    return this._values;
+  }
 
 }
 
@@ -24,7 +32,17 @@ export class DmkService {
 
   private api = `${environment.apiUrl}/dmk`;
 
+  private onSourceDataGenerated: Subject<DmkSourceData> = new Subject<DmkSourceData>();
+
   constructor(private httpClient: HttpClient) {
+  }
+
+  renderSourceData(dmkSourceData: DmkSourceData) {
+    this.onSourceDataGenerated.next(dmkSourceData);
+  }
+
+  subscribeOnSourceDataGenerated(callBack: (data: DmkSourceData) => void): void {
+    this.onSourceDataGenerated.subscribe(callBack);
   }
 
   addState(state: String) {
