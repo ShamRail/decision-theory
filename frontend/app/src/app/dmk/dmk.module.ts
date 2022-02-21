@@ -8,13 +8,15 @@ import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import { VisModule } from "ngx-vis";
 import { DmkGraphComponent } from './dmk-graph/dmk-graph.component';
+import { DmkTableComponent } from './dmk-table/dmk-table.component';
 
 
 @NgModule({
   declarations: [
     DmkPanelComponent,
     DmkComponent,
-    DmkGraphComponent
+    DmkGraphComponent,
+    DmkTableComponent
   ],
   imports: [
     CommonModule,

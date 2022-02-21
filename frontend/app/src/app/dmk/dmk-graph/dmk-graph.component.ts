@@ -15,19 +15,21 @@ import { VisNetworkService, Data, DataSet, Node, Options, Edge } from 'ngx-vis';
     `
   ],
   template: `
-    <div *ngIf="visNetworkData">
-      <h2>Network</h2>
-      <h3>Basic usage</h3>
-      <div
-        class="network-canvas"
-        [visNetwork]="visNetwork"
-        [visNetworkData]="visNetworkData"
-        [visNetworkOptions]="visNetworkOptions"
-        (initialized)="networkInitialized()"
-      ></div>
-      <button type="button" class="btn btn-default" (click)="addNode()">Add node</button>
-      <p><strong>Note:</strong> Open your dev tools to see the console output when the network receives click events.
-      </p>
+    <div class="container">
+      <div *ngIf="visNetworkData">
+        <h2>Network</h2>
+        <h3>Basic usage</h3>
+        <div
+          class="network-canvas"
+          [visNetwork]="visNetwork"
+          [visNetworkData]="visNetworkData"
+          [visNetworkOptions]="visNetworkOptions"
+          (initialized)="networkInitialized()"
+        ></div>
+        <button type="button" class="btn btn-default" (click)="addNode()">Add node</button>
+        <p><strong>Note:</strong> Open your dev tools to see the console output when the network receives click events.
+        </p>
+      </div>
     </div>
   `
 
