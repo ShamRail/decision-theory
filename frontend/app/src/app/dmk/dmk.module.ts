@@ -9,6 +9,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { VisModule } from "ngx-vis";
 import { DmkGraphComponent } from './dmk-graph/dmk-graph.component';
 import { DmkTableComponent } from './dmk-table/dmk-table.component';
+import { DmkResultComponent } from './dmk-result/dmk-result.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { DmkTableComponent } from './dmk-table/dmk-table.component';
     DmkPanelComponent,
     DmkComponent,
     DmkGraphComponent,
-    DmkTableComponent
+    DmkTableComponent,
+    DmkResultComponent
   ],
   imports: [
     CommonModule,

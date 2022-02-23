@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {DmkService, DmkSourceData} from "../service/DmkService";
+import {DmkResult, DmkService, DmkSourceData} from "../service/DmkService";
 
 @Component({
   selector: 'app-dmk-panel',
@@ -12,8 +12,10 @@ export class DmkPanelComponent implements OnInit {
   currentStrategy = '';
   minV : any;
   maxV : any;
+  stepAmount: any;
 
   @Output() onDataGenerated: EventEmitter<DmkSourceData> = new EventEmitter<DmkSourceData>();
+  @Output() onCalculated: EventEmitter<DmkResult> = new EventEmitter<DmkResult>();
 
   constructor(
     private dmkService: DmkService
@@ -46,6 +48,16 @@ export class DmkPanelComponent implements OnInit {
     this.dmkService.generateData().subscribe(data => {
       this.onDataGenerated.emit(data);
     });
+  }
+
+  calculate() {
+    this.dmkService.calculateMarkProcess(this.dmkService.lastGeneratedData).subscribe((data) => {
+      this.onCalculated.emit(data);
+    })
+  }
+
+  updateSteps() {
+    this.dmkService.updateSteps(this.stepAmount);
   }
 
 }

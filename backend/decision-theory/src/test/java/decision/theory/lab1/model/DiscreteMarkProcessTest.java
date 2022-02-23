@@ -1,5 +1,7 @@
 package decision.theory.lab1.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import decision.theory.lab1.interfaces.model.IMarkProcessResult;
 import decision.theory.lab1.service.DiscreteMarkProcessService;
 import decision.theory.lab1.service.RandomService;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DiscreteMarkProcessTest {
 
     @Test
-    public void simpleTest() {
+    public void simpleTest() throws JsonProcessingException {
         var probabilityData = List.of(
                 new double[][] {
                         {1.00, 0.00},
@@ -43,6 +45,7 @@ class DiscreteMarkProcessTest {
                 }
         );
         IMarkProcessResult result = new DiscreteMarkProcessService(new RandomService()).calculate(probabilityData, valueData, 3);
+        System.out.println(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(result));
         assertEquals(
                 new TreeMap<>() {
                     {

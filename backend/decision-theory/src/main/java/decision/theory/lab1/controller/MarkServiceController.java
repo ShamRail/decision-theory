@@ -1,7 +1,9 @@
 package decision.theory.lab1.controller;
 
+import decision.theory.lab1.interfaces.model.IMarkProcessResult;
 import decision.theory.lab1.interfaces.model.IMarkProcessSourceData;
 import decision.theory.lab1.interfaces.service.IMarkProcessService;
+import decision.theory.lab1.model.MarkProcessSourceData;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
@@ -23,6 +25,15 @@ public class MarkServiceController {
             @RequestParam double maxV
     ) {
         return markProcessService.generateSourceData(stateCount, strategyCount, minV, maxV);
+    }
+
+    @PostMapping("/calculate")
+    public IMarkProcessResult calculateProcess(
+            @RequestBody MarkProcessSourceData sourceData,
+            @RequestParam int stepAmount) {
+        return markProcessService.calculate(
+                sourceData.getProbabilities(), sourceData.getValues(), stepAmount
+        );
     }
 
 }

@@ -20,8 +20,22 @@ export class DmkTableComponent implements OnInit {
     });
   }
 
-
   get data(): DmkSourceData {
     return this._data;
   }
+
+  updateProbabilityCell(strategy: number, row: number, col: number, event: any) {
+    this.dmkService.updateSourceDataValue(
+      strategy, row, col, event.value,
+      (data) => data.probabilities
+    )
+  }
+
+  updateValueCell(strategy: number, row: number, col: number, event: any) {
+    this.dmkService.updateSourceDataValue(
+      strategy, row, col, event.value,
+      (data) => data.values
+    )
+  }
+
 }

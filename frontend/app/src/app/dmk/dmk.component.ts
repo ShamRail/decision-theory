@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DmkService, DmkSourceData} from "./service/DmkService";
+import {DmkResult, DmkService, DmkSourceData} from "./service/DmkService";
 
 @Component({
   selector: 'app-dmk',
@@ -17,6 +17,10 @@ export class DmkComponent implements OnInit {
 
   updateTableAndGraphView(dmkSourceData: DmkSourceData) {
     this.dmkService.renderSourceData(dmkSourceData);
+  }
+
+  handleResult($event: DmkResult) {
+    this.dmkService.renderResult($event);
   }
 
 }
