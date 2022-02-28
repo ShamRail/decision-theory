@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable, Subject} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {map} from "rxjs/operators";
 
 export class DmkSourceData {
 
@@ -35,6 +34,18 @@ export class DmkResult {
   get strategyResultStep(): Map<number, Map<number, number>> {
     return this._strategyResultStep;
   }
+
+}
+
+export class DmkState {
+
+  constructor(
+    public _states: String[] = [],
+    public _strategies: String[] = [],
+    public _minV: number,
+    public _maxV: number,
+    public _stepAmount: number,
+    public _lastGeneratedData: DmkSourceData) { }
 
 }
 
@@ -105,6 +116,13 @@ export class DmkService {
           .append('maxV', this._maxV)
       }
     )
+  }
+
+  getCurrentState(): DmkState {
+    return new DmkState(
+      this._states, this._strategies, this._minV,
+      this._maxV, this._stepAmount, this._lastGeneratedData
+    );
   }
 
   calculateMarkProcess(data: DmkSourceData): Observable<DmkResult> {
