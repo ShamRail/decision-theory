@@ -38,4 +38,11 @@ export class DmkTableComponent implements OnInit {
     )
   }
 
+  getStateHeading(k: number): String {
+    return this.dmkService.states[k];
+  }
+
+  getStrategyHeading(k: number): String {
+    return this.dmkService.strategies[k];
+  }
 }

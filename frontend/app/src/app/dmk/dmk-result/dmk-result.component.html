@@ -6,10 +6,10 @@
       <tr class="table-primary">
         <th scope="col">n</th>
         <th scope="col" *ngFor="let i of getIndexes(statesCount);">
-          <i>v{{ i }}(n)</i>
+          <i>v{{ getHeading(i) }}(n)</i>
         </th>
         <th scope="col" *ngFor="let i of getIndexes(statesCount);">
-          <i>d{{ i }}(n)</i>
+          <i>d{{ getHeading(i) }}(n)</i>
         </th>
       </tr>
       </thead>
@@ -17,7 +17,7 @@
       <tr *ngFor="let row of transformedData; let i = index">
         <th scope="row"> {{ i }} </th>
         <td *ngFor="let cell of row;" class="p-0">
-          {{ cell.toPrecision(2) }}
+          {{ cell === -1 ? '-' : cell.toPrecision(2) }}
         </td>
       </tr>
       </tbody>

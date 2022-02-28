@@ -32,7 +32,6 @@ export class DmkResultComponent implements OnInit {
 
     let valueEntries = Object.entries(this.data.valueResultPerStep);
     let strategyEntries = Object.entries(this.data.strategyResultStep);
-    console.log(this.data);
     if (valueEntries.length > 0) {
       valueEntries.forEach((value) => {
         let row = Array<number>();
@@ -65,4 +64,9 @@ export class DmkResultComponent implements OnInit {
     }
     return array;
   }
+
+  getHeading(i: number): String {
+    return this.dmkService.states[i];
+  }
+
 }

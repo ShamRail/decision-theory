@@ -42,32 +42,15 @@ export class DmkGraphComponent implements OnInit {
     private visNetworkService: VisNetworkService) {
   }
 
-  // public addNode(): void {
-  //   const lastId = this.nodes.length;
-  //   const newId = this.nodes.length + 1;
-  //   this.nodes.add({id: newId, label: 'New Node'});
-  //   this.edges.add({from: lastId, to: newId});
-  //   this.visNetworkService.fit(this.visNetwork);
-  // }
-
   public ngOnInit(): void {
-    // this.nodes = new DataSet<Node>([
-    //   {id: '1', label: 'Node 1'},
-    //   {id: '2', label: 'Node 2'},
-    //   {id: '3', label: 'Node 3'},
-    //   {id: '4', label: 'Node 4'},
-    //   {id: '5', label: 'Node 5', title: 'Title of Node 5'}
-    // ]);
-    // this.edges = new DataSet<Edge>([
-    //   {from: '1', to: '2', label: '123'},
-    //   {from: '1', to: '3'},
-    //   {from: '2', to: '4'},
-    //   {from: '2', to: '5'}
-    // ]);
     this.visNetworkData = {nodes: this.nodes, edges: this.edges};
     this.visNetworkOptions = {
-      autoResize: true, edges: {
+      autoResize: false,
+      edges: {
         arrows: {to: true},
+      },
+      physics: {
+        solver: 'forceAtlas2Based'
       }
     };
 
@@ -75,32 +58,23 @@ export class DmkGraphComponent implements OnInit {
       this.nodes.clear();
       this.edges.clear();
       const matrix = data.probabilities[0];
+      const states = this.dmkService.states;
       for (let i = 0; i < matrix.length; i++) {
-        this.nodes.add({id: i.toString(), label: i.toString()})
+        this.nodes.add({id: states[i].toString(), label: states[i].toString()})
       }
       for (let i = 0; i < matrix.length; i++) {
         for (let j = 0; j < matrix.length; j++) {
           const val = matrix[i][j];
           if (val > 0.01) {
             this.edges.add(
-              {from: i.toString(), to: j.toString(), label: val.toPrecision(2), arrows: {
+              {from: states[i].toString(), to: states[j].toString(), label: val.toPrecision(2), color: 'red', arrows: {
                 to: true
               }},
             )
           }
         }
       }
-      // this.visNetworkData = {nodes: newNodes, edges: newEdges};
       this.visNetworkService.redraw(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
-      // this.visNetworkService.fit(this.visNetwork);
     });
 
   }
