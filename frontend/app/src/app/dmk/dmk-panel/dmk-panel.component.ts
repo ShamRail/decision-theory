@@ -13,6 +13,7 @@ export class DmkPanelComponent implements OnInit {
   minV : any;
   maxV : any;
   stepAmount: any;
+  file: File | null = null;
 
   @Output() onDataGenerated: EventEmitter<DmkSourceData> = new EventEmitter<DmkSourceData>();
   @Output() onCalculated: EventEmitter<DmkResult> = new EventEmitter<DmkResult>();
@@ -22,6 +23,9 @@ export class DmkPanelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.minV = this.dmkService.minV;
+    this.maxV = this.dmkService.maxV;
+    this.stepAmount = this.dmkService.stepAmount;
   }
 
   addState() {
@@ -40,7 +44,13 @@ export class DmkPanelComponent implements OnInit {
     return this.dmkService.states;
   }
 
-  updateRange() {
+  updateMin($event: any) {
+    this.minV = $event.target.value;
+    this.dmkService.updateRange(this.minV, this.maxV);
+  }
+
+  updateMax($event: any) {
+    this.maxV = $event.target.value;
     this.dmkService.updateRange(this.minV, this.maxV);
   }
 
@@ -69,4 +79,22 @@ export class DmkPanelComponent implements OnInit {
     link.click();
   }
 
+  uploadFile($event: any) {
+    this.file = $event.target.files[0];
+    if (this.file !== null) {
+      this.dmkService.uploadFile(this.file);
+    }
+  }
+
+  getMinV() {
+    return this.dmkService.minV;
+  }
+
+  getMaxV() {
+    return this.dmkService.maxV;
+  }
+
+  getStepAmount() {
+    return this.dmkService.stepAmount;
+  }
 }

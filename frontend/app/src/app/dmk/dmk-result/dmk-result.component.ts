@@ -28,13 +28,12 @@ export class DmkResultComponent implements OnInit {
 
   private transformData() {
     this.transformedData = [];
+    this.statesCount = 0;
 
     let valueEntries = Object.entries(this.data.valueResultPerStep);
     let strategyEntries = Object.entries(this.data.strategyResultStep);
-
+    console.log(this.data);
     if (valueEntries.length > 0) {
-      this.statesCount = valueEntries[0].length;
-
       valueEntries.forEach((value) => {
         let row = Array<number>();
         value.forEach((val, index) => {
@@ -43,6 +42,7 @@ export class DmkResultComponent implements OnInit {
           }
         });
         this.transformedData.push(row);
+        this.statesCount = row.length;
       })
 
       strategyEntries.forEach((value, key) => {
@@ -58,9 +58,9 @@ export class DmkResultComponent implements OnInit {
     }
   }
 
-  getIndexes(): number[] {
+  getIndexes(stateCount: number): number[] {
     let array = [];
-    for (let i = 0; i < this.statesCount; i++) {
+    for (let i = 0; i < stateCount; i++) {
       array.push(i);
     }
     return array;

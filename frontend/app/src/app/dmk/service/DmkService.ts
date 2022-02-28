@@ -54,12 +54,12 @@ export class DmkState {
 })
 export class DmkService {
 
-  private _states: String[] = [];
-  private _strategies: String[] = [];
-  private _minV: number = 0;
+  public _states: String[] = [];
+  public _strategies: String[] = [];
+  private _minV: number = 2;
   private _maxV: number = 10;
   private _stepAmount: number = 2;
-  private _lastGeneratedData: DmkSourceData = new DmkSourceData([], []);
+  public _lastGeneratedData: DmkSourceData = new DmkSourceData([], []);
 
   private api = `${environment.apiUrl}/dmk`;
 
@@ -106,6 +106,18 @@ export class DmkService {
     return this._lastGeneratedData;
   }
 
+  get minV(): number {
+    return this._minV;
+  }
+
+  get maxV(): number {
+    return this._maxV;
+  }
+
+  get stepAmount(): number {
+    return this._stepAmount;
+  }
+
   generateData(): Observable<DmkSourceData> {
     return this.httpClient.get<DmkSourceData>(`${this.api}/generate`,
       {
@@ -145,6 +157,20 @@ export class DmkService {
 
   updateSteps(stepAmount: number) {
     this._stepAmount = stepAmount;
+  }
+
+  uploadFile(file: File): void {
+    let formData = new FormData();
+    formData.append("file", file);
+    this.httpClient.post<DmkState>(`${environment.apiUrl}/import/dmk`, formData).subscribe((state) => {
+      this._states = state._states;
+      this._strategies = state._strategies;
+      this._minV = state._minV;
+      this._maxV = state._maxV;
+      this._stepAmount = state._stepAmount;
+      this._lastGeneratedData = state._lastGeneratedData;
+      this.onSourceDataGenerated.next(this._lastGeneratedData);
+    });
   }
 
 }

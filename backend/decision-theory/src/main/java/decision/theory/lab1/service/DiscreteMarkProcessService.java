@@ -37,7 +37,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
                                                      double minV, double maxV) {
         var probabilities = new ArrayList<double[][]>(strategiesCount);
         var values = new ArrayList<double[][]>(strategiesCount);
-        for (var k = 0; k < statesCount; k++) {
+        for (var k = 0; k < strategiesCount; k++) {
             var currentProbabilities = new double[statesCount][statesCount];
             var currentValues = new double[statesCount][statesCount];
             for (var i = 0; i < statesCount; i++) {
