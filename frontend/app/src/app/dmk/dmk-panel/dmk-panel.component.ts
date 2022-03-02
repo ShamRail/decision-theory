@@ -30,10 +30,12 @@ export class DmkPanelComponent implements OnInit {
 
   addState() {
     this.dmkService.addState(this.currentState);
+    this.currentState = '';
   }
 
   addStrategy() {
     this.dmkService.addStrategy(this.currentStrategy);
+    this.currentStrategy = '';
   }
 
   getStrategies(): String[] {

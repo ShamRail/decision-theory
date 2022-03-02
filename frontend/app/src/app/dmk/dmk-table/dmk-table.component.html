@@ -15,7 +15,7 @@
         <th scope="row"> {{ getStateHeading(i) }} </th>
         <td *ngFor="let cell of row; let j = index" class="p-0">
           <input type="text" class="form-control border-0 w-25"
-                 value="{{ cell.toPrecision(3) }}" (change)="updateProbabilityCell(k, i, j, $event)">
+                 value="{{ cell.toFixed(2) }}" (change)="updateProbabilityCell(k, i, j, $event)">
         </td>
       </tr>
       </tbody>
@@ -23,7 +23,7 @@
   </div>
   <div>
     <h6>Матрицы доходностей</h6>
-    <table class="table table-bordered text-center table-sm" *ngFor="let table of data.values; let k = index;">
+    <table class="table table-bordered table-sm text-center table-sm" *ngFor="let table of data.values; let k = index;">
       <thead>
       <tr class="table-primary">
         <th scope="col">{{ getStrategyHeading(k) }}</th>
@@ -37,7 +37,7 @@
         <th scope="row"> {{ getStateHeading(i) }} </th>
         <td *ngFor="let cell of row; let j = index" class="p-0">
           <input type="text" class="form-control border-0 w-25"
-                 value="{{ cell.toPrecision(3) }}" (change)="updateValueCell(k, i, j, $event)">
+                 value="{{ cell.toFixed(2) }}" (change)="updateValueCell(k, i, j, $event)">
         </td>
       </tr>
       </tbody>

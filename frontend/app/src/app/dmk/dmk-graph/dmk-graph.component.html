@@ -1,1 +1,20 @@
-<p>dmk-graph works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <ul>
+        <li *ngFor="let strategy of resultStrategies;" [ngStyle]="{'color': strategy.color}"><b>{{ strategy.name }}</b></li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <div *ngIf="visNetworkData">
+        <div
+          class="network-canvas"
+          [visNetwork]="visNetwork"
+          [visNetworkData]="visNetworkData"
+          [visNetworkOptions]="visNetworkOptions"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <br>
+</div>

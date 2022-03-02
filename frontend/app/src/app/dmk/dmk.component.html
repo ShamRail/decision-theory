@@ -1,10 +1,11 @@
-<div class="container mt-3">
+<div class="container-fluid mt-3">
   <div class="row">
     <div class="col-4">
       <app-dmk-panel
         (onDataGenerated)="updateTableAndGraphView($event)"
         (onCalculated)="handleResult($event)"
       ></app-dmk-panel>
+      <app-dmk-log></app-dmk-log>
     </div>
     <div class="col-8">
       <div>

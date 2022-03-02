@@ -26,14 +26,14 @@ export class DmkTableComponent implements OnInit {
 
   updateProbabilityCell(strategy: number, row: number, col: number, event: any) {
     this.dmkService.updateSourceDataValue(
-      strategy, row, col, event.value,
+      strategy, row, col, Number(event.target.value),
       (data) => data.probabilities
     )
   }
 
   updateValueCell(strategy: number, row: number, col: number, event: any) {
     this.dmkService.updateSourceDataValue(
-      strategy, row, col, event.value,
+      strategy, row, col, Number(event.target.value),
       (data) => data.values
     )
   }

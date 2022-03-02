@@ -27,9 +27,10 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
         var table = formTable(
                 stateCount, strategiesCount, probabilityData, valuesData
         );
-        var calculatedTable = calculateExpectedValue(table);
-        var processResult = calculateTotalExpectedValue(calculatedTable, stepAmount);
-        return prepareResult(processResult, probabilityData);
+        var log = new ArrayList<String>();
+        var calculatedTable = calculateExpectedValue(table, log);
+        var processResult = calculateTotalExpectedValue(calculatedTable, stepAmount, log);
+        return prepareResult(processResult, probabilityData, log);
     }
 
     @Override
@@ -71,18 +72,35 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
         return rows;
     }
 
-    private List<CalculationRow> calculateExpectedValue(List<CalculationRow> table) {
+    private List<CalculationRow> calculateExpectedValue(List<CalculationRow> table, List<String> log) {
+        log.add("Ожидаемые доходы:");
         for (var row : table) {
+            var logLine = String.format("q_%d_%d = ", row.strategy, row.currentState);
             var expectedValue = 0.0;
             for (int i = 0; i < row.values.size(); i++) {
-                expectedValue += row.values.get(i) * row.probabilities.get(i);
+                var value = row.values.get(i);
+                var probability = row.probabilities.get(i);
+                logLine = logLine.concat(String.format("%.2f * %.2f + ", value, probability));
+                expectedValue += value * probability;
             }
             row.expectedValue = expectedValue;
+            logLine = logLine.substring(0, logLine.length() - 2);
+            logLine = logLine.concat(String.format("= %.2f", expectedValue));
+            log.add(logLine);
         }
         return table;
     }
 
-    private Map<Integer, Map<Integer, ResultRow>> calculateTotalExpectedValue(List<CalculationRow> table, int stepAmount) {
+    private Map<Integer, Map<Integer, ResultRow>> calculateTotalExpectedValue(List<CalculationRow> table, int stepAmount, List<String> log) {
+
+        log.addAll(List.of(
+                "",
+                "Полные ожидаемые доходы: ",
+                "",
+                "vj(0) = 0",
+                ""
+        ));
+
         var rowsPerState = table.stream().collect(Collectors.groupingBy(
                 row -> row.currentState, Collectors.toList()
         ));
@@ -100,19 +118,40 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
             result.put(step, new HashMap<>());
             var bestResults = new HashMap<Integer, ResultRow>();
             for (var groupPerState : rowsPerState.entrySet()) {
+                var totalValues = new ArrayList<Double>();
                 var bestNextState = new ResultRow(-1, -1, 0);
                 var state = groupPerState.getKey();
                 var group = groupPerState.getValue();
                 for (var row : group) {
+                    var logLine = String.format("v_%d_%d_(%d) = ", row.strategy, row.currentState, step);
+
                     var totalValue = row.expectedValue;
                     for (int j = 0; j < row.values.size(); j++) {
-                        totalValue += row.probabilities.get(j) * prevTotalValues.get(j).value;
+                        var probability = row.probabilities.get(j);
+                        var prevValue = prevTotalValues.get(j).value;
+                        logLine = logLine.concat(String.format("%.2f * %.2f + ", prevValue, probability));
+                        totalValue += probability * prevValue;
                     }
+                    totalValues.add(totalValue);
+
                     if (totalValue > bestNextState.value) {
                         bestNextState = new ResultRow(state, row.strategy, totalValue);
                     }
+
+                    logLine = logLine.substring(0, logLine.length() - 2);
+                    logLine = logLine.concat(String.format("= %.2f", bestNextState.value));
+                    log.add(logLine);
                 }
+
                 bestResults.put(state, bestNextState);
+
+                log.add(String.format(
+                        "v%d(%d) = max[%s] = %.2f", state, step,
+                        totalValues.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(";")),
+                        bestNextState.value
+                ));
+                log.add(String.format("d%d(%d) = %d", state, step, bestNextState.strategy));
+                log.add("");
             }
             for (var resultPerState : bestResults.entrySet()) {
                 prevTotalValues.put(resultPerState.getKey(), resultPerState.getValue());
@@ -123,7 +162,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
         return result;
     }
 
-    private IMarkProcessResult prepareResult(Map<Integer, Map<Integer, ResultRow>> result, List<double[][]> probabilityData) {
+    private IMarkProcessResult prepareResult(Map<Integer, Map<Integer, ResultRow>> result, List<double[][]> probabilityData, List<String> log) {
         var valueResult = new TreeMap<Integer, Map<Integer, Double>>();
         var strategyResult = new TreeMap<Integer, Map<Integer, Integer>>();
         for (var keyValue : result.entrySet()) {
@@ -136,7 +175,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
             valueResult.put(keyValue.getKey(), vResult);
             strategyResult.put(keyValue.getKey(), sResult);
         }
-        return new MarkProcessResult(probabilityData, valueResult, strategyResult);
+        return new MarkProcessResult(probabilityData, valueResult, strategyResult, log);
     }
 
     private static class CalculationRow {
@@ -168,6 +207,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
         }
     }
 
-    private static record ResultRow(int state, int strategy, double value) { }
+    private static record ResultRow(int state, int strategy, double value) {
+    }
 
 }

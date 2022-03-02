@@ -24,7 +24,8 @@ export class DmkResult {
 
   constructor(
     private _valueResultPerStep: Map<number, Map<number, number>> = new Map<number, Map<number, number>>(),
-    private _strategyResultStep: Map<number, Map<number, number>> = new Map<number, Map<number, number>>()) {
+    private _strategyResultStep: Map<number, Map<number, number>> = new Map<number, Map<number, number>>(),
+    private _log: string[] = []) {
   }
 
   get valueResultPerStep(): Map<number, Map<number, number>> {
@@ -33,6 +34,10 @@ export class DmkResult {
 
   get strategyResultStep(): Map<number, Map<number, number>> {
     return this._strategyResultStep;
+  }
+
+  get log(): string[] {
+    return this._log;
   }
 
 }

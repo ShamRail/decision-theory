@@ -13,12 +13,16 @@ public class MarkProcessResult implements IMarkProcessResult {
 
     private List<double[][]> probabilities;
 
+    private List<String> log;
+
     public MarkProcessResult(List<double[][]> probabilities,
                              Map<Integer, Map<Integer, Double>> valueResult,
-                             Map<Integer, Map<Integer, Integer>> strategyResult) {
+                             Map<Integer, Map<Integer, Integer>> strategyResult,
+                             List<String> log) {
         this.valueResult = valueResult;
         this.strategyResult = strategyResult;
         this.probabilities = probabilities;
+        this.log = log;
     }
 
     @Override
@@ -35,4 +39,10 @@ public class MarkProcessResult implements IMarkProcessResult {
     public Map<Integer, Map<Integer, Integer>> getStrategyResultStep() {
         return strategyResult;
     }
+
+    @Override
+    public List<String> getLog() {
+        return log;
+    }
+
 }

@@ -10,6 +10,7 @@ import { VisModule } from "ngx-vis";
 import { DmkGraphComponent } from './dmk-graph/dmk-graph.component';
 import { DmkTableComponent } from './dmk-table/dmk-table.component';
 import { DmkResultComponent } from './dmk-result/dmk-result.component';
+import { DmkLogComponent } from './dmk-log/dmk-log.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { DmkResultComponent } from './dmk-result/dmk-result.component';
     DmkComponent,
     DmkGraphComponent,
     DmkTableComponent,
-    DmkResultComponent
+    DmkResultComponent,
+    DmkLogComponent
   ],
   imports: [
     CommonModule,

@@ -11,4 +11,6 @@ public interface IMarkProcessResult {
 
     Map<Integer, Map<Integer, Integer>> getStrategyResultStep();
 
+    List<String> getLog();
+
 }
