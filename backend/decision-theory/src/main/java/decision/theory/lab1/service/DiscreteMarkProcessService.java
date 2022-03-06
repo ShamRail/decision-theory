@@ -123,7 +123,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
                 var state = groupPerState.getKey();
                 var group = groupPerState.getValue();
                 for (var row : group) {
-                    var logLine = String.format("v_%d_%d_(%d) = ", row.strategy, row.currentState, step);
+                    var logLine = String.format("v_%d_%d_(%d) = %.2f + ", row.strategy, row.currentState, step, row.expectedValue);
 
                     var totalValue = row.expectedValue;
                     for (int j = 0; j < row.values.size(); j++) {
@@ -139,18 +139,18 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
                     }
 
                     logLine = logLine.substring(0, logLine.length() - 2);
-                    logLine = logLine.concat(String.format("= %.2f", bestNextState.value));
+                    logLine = logLine.concat(String.format("= %.2f", totalValue));
                     log.add(logLine);
                 }
 
                 bestResults.put(state, bestNextState);
 
                 log.add(String.format(
-                        "v%d(%d) = max[%s] = %.2f", state, step,
+                        "---> v%d(%d) = max[%s] = %.2f", state, step,
                         totalValues.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(";")),
                         bestNextState.value
                 ));
-                log.add(String.format("d%d(%d) = %d", state, step, bestNextState.strategy));
+                log.add(String.format("---> d%d(%d) = %d", state, step, bestNextState.strategy));
                 log.add("");
             }
             for (var resultPerState : bestResults.entrySet()) {

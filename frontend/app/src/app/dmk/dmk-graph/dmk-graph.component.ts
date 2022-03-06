@@ -51,6 +51,7 @@ export class DmkGraphComponent implements OnInit {
       this.nodes.clear();
       this.edges.clear();
       this.drawGraph(this.prepareStrategies(data));
+      this.visNetworkService.fit(this.visNetwork);
       this.visNetworkService.redraw(this.visNetwork);
     });
 
