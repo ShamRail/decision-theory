@@ -1,6 +1,7 @@
 package decision.theory.lab2.service;
 
 import decision.theory.lab2.interfaces.ILvmTreeBuilder;
+import decision.theory.lab2.model.LvmNodeRelation;
 import decision.theory.lab2.model.LvmTree;
 import decision.theory.lab2.model.LvmTreeEdge;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class LvmTreeBuilder implements ILvmTreeBuilder {
                 if (name == null) {
                     throw new IllegalArgumentException("Unknown node with number " + rootNumber);
                 }
-                root = new LvmTree(rootNumber, name);
+                root = new LvmTree(rootNumber, name, LvmNodeRelation.EMPTY);
                 break;
             }
         }
@@ -45,18 +46,21 @@ public class LvmTreeBuilder implements ILvmTreeBuilder {
     }
 
     private LvmTree restoreTree(LvmTree subTree, List<LvmTreeEdge> treeEdges, Map<Integer, String> nodesDescriptor) {
-        var number = subTree.number();
+        var number = subTree.getNumber();
         for (var edge : treeEdges) {
             if (edge.from() == number) {
+                if (subTree.getChildRelation() == LvmNodeRelation.EMPTY) {
+                    subTree.setChildRelation(edge.relation());
+                }
                 var nodeNumber = edge.to();
                 var name = nodesDescriptor.get(nodeNumber);
                 if (name == null) {
                     throw new IllegalArgumentException("Unknown node with number " + nodeNumber);
                 }
-                subTree.children().add(new LvmTree(nodeNumber, name));
+                subTree.getChildren().add(new LvmTree(nodeNumber, name, LvmNodeRelation.EMPTY));
             }
         }
-        for (var child : subTree.children()) {
+        for (var child : subTree.getChildren()) {
             restoreTree(child, treeEdges, nodesDescriptor);
         }
         return subTree;

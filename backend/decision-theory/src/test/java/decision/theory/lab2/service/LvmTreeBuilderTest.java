@@ -28,9 +28,9 @@ class LvmTreeBuilderTest {
         );
 
         LvmTree expected = new LvmTree(
-                1, "First", List.of(
-                new LvmTree(2, "Second"),
-                new LvmTree(3, "Third")
+                1, "First", LvmNodeRelation.OR, List.of(
+                new LvmTree(2, "Second", LvmNodeRelation.EMPTY),
+                new LvmTree(3, "Third", LvmNodeRelation.EMPTY)
             )
         );
 
@@ -59,17 +59,17 @@ class LvmTreeBuilderTest {
         );
 
         LvmTree expected = new LvmTree(
-                1, "First", List.of(
+                1, "First", LvmNodeRelation.OR, List.of(
                 new LvmTree(
-                        2, "Second", List.of(
-                        new LvmTree(4, "Fourth"),
-                        new LvmTree(5, "Fifth")
+                        2, "Second", LvmNodeRelation.AND, List.of(
+                        new LvmTree(4, "Fourth", LvmNodeRelation.EMPTY),
+                        new LvmTree(5, "Fifth", LvmNodeRelation.EMPTY)
                     )
                 ),
                 new LvmTree(
-                        3, "Third", List.of(
-                        new LvmTree(6, "Sixth"),
-                        new LvmTree(7, "Seventh")
+                        3, "Third", LvmNodeRelation.AND, List.of(
+                        new LvmTree(6, "Sixth", LvmNodeRelation.EMPTY),
+                        new LvmTree(7, "Seventh", LvmNodeRelation.EMPTY)
                     )
                 )
             )
