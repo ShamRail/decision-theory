@@ -5,10 +5,12 @@ import decision.theory.lab2.interfaces.IExpressionCalculator;
 import decision.theory.lab2.interfaces.ILvmProbabilityFunctionSupplier;
 import decision.theory.lab2.model.LvmLogicalNode;
 import decision.theory.lab2.model.LvmProbabilityFunction;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class LvmProbabilityFunctionSupplier implements ILvmProbabilityFunctionSupplier {
 
     private static final String NOT = "not";

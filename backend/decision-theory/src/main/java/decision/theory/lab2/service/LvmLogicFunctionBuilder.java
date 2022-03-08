@@ -6,9 +6,11 @@ import decision.theory.lab2.interfaces.ILvmLogicFunctionBuilder;
 import decision.theory.lab2.model.LvmLogicalNode;
 import decision.theory.lab2.model.LvmNodeRelation;
 import decision.theory.lab2.model.LvmTree;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 public class LvmLogicFunctionBuilder implements ILvmLogicFunctionBuilder {
 
     @Override
