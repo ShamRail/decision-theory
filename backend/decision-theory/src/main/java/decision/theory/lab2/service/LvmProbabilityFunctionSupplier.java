@@ -17,7 +17,7 @@ public class LvmProbabilityFunctionSupplier implements ILvmProbabilityFunctionSu
 
     private static final String NOT_DIVIDER = " * ";
 
-    private IExpressionCalculator<Double> expressionCalculator;
+    private final IExpressionCalculator<Double> expressionCalculator;
 
     public LvmProbabilityFunctionSupplier(IExpressionCalculator<Double> expressionCalculator) {
         this.expressionCalculator = expressionCalculator;

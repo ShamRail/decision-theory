@@ -27,21 +27,22 @@ class LvmProbabilityFunctionSupplierTest {
     public void whenBuildProbabilityFunction() {
 
         LvmTree tree = new LvmTree(
-                1, "CompoundFirst", LvmNodeRelation.AND, List.of(
+                "Compound1", LvmNodeRelation.AND, List.of(
                 new LvmTree(
-                        2, "CompoundSecond", LvmNodeRelation.OR, List.of(
-                        new LvmTree(4, "x1", LvmNodeRelation.EMPTY),
-                        new LvmTree(5, "x2", LvmNodeRelation.EMPTY)
+                        "Compound2", LvmNodeRelation.OR, List.of(
+                        new LvmTree("x1", LvmNodeRelation.EMPTY),
+                        new LvmTree("x2", LvmNodeRelation.EMPTY)
                 )
                 ),
                 new LvmTree(
-                        3, "CompoundThird", LvmNodeRelation.OR, List.of(
-                        new LvmTree(6, "x3", LvmNodeRelation.EMPTY),
-                        new LvmTree(7, "x4", LvmNodeRelation.EMPTY)
-                )
+                        "Compound3", LvmNodeRelation.OR, List.of(
+                        new LvmTree("x3", LvmNodeRelation.EMPTY),
+                        new LvmTree("x4", LvmNodeRelation.EMPTY)
+                    )
                 )
             )
         );
+
         String expectedExpression = "1 - (1 - x1 * x3) * (1 - x1 * x4) * (1 - x2 * x3) * (1 - x2 * x4)";
 
         LvmLogicalNode rootNode = lvmLogicFunctionBuilder.convertToNotAndBasis(lvmLogicFunctionBuilder.buildLogicalFunction(tree));
