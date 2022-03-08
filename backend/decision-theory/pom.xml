@@ -42,6 +42,11 @@
 			<artifactId>jbool_expressions</artifactId>
 			<version>1.23</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fathzer</groupId>
+			<artifactId>javaluator</artifactId>
+			<version>3.0.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
