@@ -1,10 +1,8 @@
 package decision.theory.lab2.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class LvmTree {
+public class LvmTree implements Iterable<LvmTree> {
 
     private final String name;
 
@@ -56,4 +54,42 @@ public class LvmTree {
     public int hashCode() {
         return Objects.hash(name, childRelation, children);
     }
+
+    @Override
+    public String toString() {
+        return "LvmTree{" +
+                "name='" + name + '\'' +
+                ", childRelation=" + childRelation +
+                '}';
+    }
+
+    @Override
+    public Iterator<LvmTree> iterator() {
+        return new BFSIterator(name, childRelation, children);
+    }
+
+    private static final class BFSIterator implements Iterator<LvmTree> {
+
+        private final Queue<LvmTree> queue = new LinkedList<>();
+
+        private BFSIterator(String name, LvmNodeRelation relation, List<LvmTree> children) {
+            this.queue.add(new LvmTree(name, relation, children));
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !queue.isEmpty();
+        }
+
+        @Override
+        public LvmTree next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            var currentNode = queue.poll();
+            queue.addAll(currentNode.children);
+            return currentNode;
+        }
+    }
+
 }
