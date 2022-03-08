@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("checkstyle:MagicNumber")
 class LvmTreeBuilderTest {
 
     private final ILvmTreeBuilder treeBuilder = new LvmTreeBuilder();

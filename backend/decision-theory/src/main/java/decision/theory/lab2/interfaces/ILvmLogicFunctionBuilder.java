@@ -7,4 +7,6 @@ public interface ILvmLogicFunctionBuilder {
 
     LvmLogicalNode buildLogicalFunction(LvmTree tree);
 
+    LvmLogicalNode convertToNotAndBasis(LvmLogicalNode rootNode);
+
 }

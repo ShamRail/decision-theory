@@ -190,7 +190,7 @@ public class DiscreteMarkProcessService implements IMarkProcessService {
 
         private double expectedValue;
 
-        public CalculationRow(int currentState, int strategy) {
+        CalculationRow(int currentState, int strategy) {
             this.currentState = currentState;
             this.strategy = strategy;
         }

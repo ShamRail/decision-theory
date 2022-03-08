@@ -68,7 +68,7 @@ public class DmkStateDTO {
         return lastGeneratedData;
     }
 
-    public void setLastGeneratedData(DmkGeneratedDataDTO _lastGeneratedData) {
-        this.lastGeneratedData = _lastGeneratedData;
+    public void setLastGeneratedData(DmkGeneratedDataDTO lastGeneratedData) {
+        this.lastGeneratedData = lastGeneratedData;
     }
 }
