@@ -15,7 +15,7 @@
         <th scope="row"> {{ getStateHeading(i) }} </th>
         <td *ngFor="let cell of row; let j = index" class="p-0">
           <input type="text" class="form-control border-0 w-25"
-                 value="{{ cell.toFixed(2) }}" (change)="updateProbabilityCell(k, i, j, $event)">
+                 value="{{ cell.toFixed(3) }}" (change)="updateProbabilityCell(k, i, j, $event)">
         </td>
       </tr>
       </tbody>
@@ -37,7 +37,7 @@
         <th scope="row"> {{ getStateHeading(i) }} </th>
         <td *ngFor="let cell of row; let j = index" class="p-0">
           <input type="text" class="form-control border-0 w-25"
-                 value="{{ cell.toFixed(2) }}" (change)="updateValueCell(k, i, j, $event)">
+                 value="{{ cell.toFixed(3) }}" (change)="updateValueCell(k, i, j, $event)">
         </td>
       </tr>
       </tbody>

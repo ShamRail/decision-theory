@@ -38,7 +38,7 @@ export class DmkResultComponent implements OnInit {
         let row = Array<string>();
         value.forEach((val, index) => {
           if (index != 0) {
-            Object.values(val).forEach(v => row.push(Number(v).toFixed(2)));
+            Object.values(val).forEach(v => row.push(Number(v).toFixed(3)));
           }
         });
         this.transformedData.push(row);
