@@ -42,6 +42,9 @@
     </div>
     <div class="col-1">
       <button type="button" class="btn btn-primary w-100" (click)="addNode()">+</button>
+      <input type="file" hidden #fileInput (change)="readFile($event)">
+      <button type="button" class="btn btn-primary w-100" (click)="fileInput.click()">Импорт</button>
+      <button type="button" class="btn btn-primary w-100" (click)="saveFile()">Экспорт</button>
     </div>
   </div>
   <div class="row mt-3">
