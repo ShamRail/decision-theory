@@ -80,4 +80,18 @@ class LvmLogicFunctionBuilderTest {
 
     }
 
+    @Test
+    public void whenOnlyOr() {
+        LvmTree tree = new LvmTree(
+                "Compound1", LvmNodeRelation.OR, List.of(
+                new LvmTree("x1", LvmNodeRelation.EMPTY),
+                new LvmTree("x2", LvmNodeRelation.EMPTY)
+            )
+        );
+        String expectedExpression = "!(!x1 & !x2)";
+
+        LvmLogicalNode rootNode = lvmLogicFunctionBuilder.convertToNotAndBasis(lvmLogicFunctionBuilder.buildLogicalFunction(tree));
+        assertEquals(expectedExpression, rootNode.getExpressionAsString());
+    }
+
 }

@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class LvmLogicFunctionBuilder implements ILvmLogicFunctionBuilder {
 
+    private static final String AND = "and";
+
+    private static final String OR = "or";
+
+    private static final String NOT = "not";
+
     @Override
     public LvmLogicalNode buildLogicalFunction(LvmTree tree) {
         if (tree.getChildren().isEmpty()) {
@@ -40,7 +46,16 @@ public class LvmLogicFunctionBuilder implements ILvmLogicFunctionBuilder {
                 .map(this::convertToNotAndBasis)
                 .map(LvmLogicalNode::expression)
                 .collect(Collectors.toList());
-        Expression<String> convertedExpression = Not.of(And.of(subExpressions));
+        Expression<String> convertedExpression = null;
+        var expressionOperator = expression.getExprType();
+        if (OR.equals(expressionOperator)) {
+            subExpressions = subExpressions.stream()
+                    .map(Not::of)
+                    .collect(Collectors.toList());
+            convertedExpression = Not.of(And.of(subExpressions));
+        } else if (AND.equals(expressionOperator)) {
+            convertedExpression = And.of(subExpressions);
+        }
         return new LvmLogicalNode(convertedExpression);
     }
 
