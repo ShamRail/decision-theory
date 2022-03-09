@@ -13,7 +13,7 @@ export class DmkResultComponent implements OnInit {
     new Map<number, Map<number, number>>()
   );
 
-  transformedData: number[][] = [];
+  transformedData: string[][] = [];
   statesCount = 0;
 
   constructor(
@@ -32,12 +32,13 @@ export class DmkResultComponent implements OnInit {
 
     let valueEntries = Object.entries(this.data.valueResultPerStep);
     let strategyEntries = Object.entries(this.data.strategyResultStep);
+    const strategies = this.dmkService.strategies;
     if (valueEntries.length > 0) {
       valueEntries.forEach((value) => {
-        let row = Array<number>();
+        let row = Array<string>();
         value.forEach((val, index) => {
           if (index != 0) {
-            Object.values(val).forEach(v => row.push(Number(v)));
+            Object.values(val).forEach(v => row.push(Number(v).toFixed(2)));
           }
         });
         this.transformedData.push(row);
@@ -45,10 +46,15 @@ export class DmkResultComponent implements OnInit {
       })
 
       strategyEntries.forEach((value, key) => {
-        let row = Array<number>();
+        let row = Array<string>();
         value.forEach((val, index) => {
           if (index != 0) {
-            Object.values(val).forEach(v => row.push(Number(v)));
+            Object.values(val).forEach(v => {
+              const vn = Number(v);
+              row.push(
+                vn === -1 ? "-" : strategies[vn].toString()
+              )
+            });
           }
         });
         row.forEach(v => this.transformedData[key].push(v));
