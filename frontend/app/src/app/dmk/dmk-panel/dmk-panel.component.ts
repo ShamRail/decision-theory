@@ -68,7 +68,8 @@ export class DmkPanelComponent implements OnInit {
     })
   }
 
-  updateSteps() {
+  updateSteps($event: any) {
+    this.stepAmount = $event.target.value;
     this.dmkService.updateSteps(this.stepAmount);
   }
 
