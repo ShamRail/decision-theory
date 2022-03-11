@@ -1,7 +1,7 @@
 <div class="container mt-3">
   <div class="row">
     <div class="col-3">
-      <select class="form-select" [(ngModel)]="option">
+      <select class="form-select" [(ngModel)]="option" [disabled]="selectedNode != undefined">
         <option value="event">Событие</option>
         <option value="initEvent">Инит. событие</option>
         <option value="operator">Оператор</option>
@@ -12,28 +12,43 @@
         <ng-template ngSwitchCase="event">
           <form class="form row" >
             <div class="col-6">
-              <input type="text" class="form-control" placeholder="Название" aria-label="Название" [(ngModel)]="eventName" name="eventName">
+              <input type="text" class="form-control" placeholder="Название" aria-label="Название"
+                     [(ngModel)]="eventName"
+                     (ngModelChange)="updateSelected()"
+                     name="eventName">
             </div>
             <div class="col-6">
-              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание" [(ngModel)]="eventDescription" name="eventDescription">
+              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание"
+                     [(ngModel)]="eventDescription"
+                     (ngModelChange)="updateSelected()"
+                     name="eventDescription">
             </div>
           </form>
         </ng-template>
         <ng-template ngSwitchCase="initEvent">
           <form class="form row" >
             <div class="col-5">
-              <input type="text" class="form-control" placeholder="Название" aria-label="Название" [(ngModel)]="eventName"  name="eventName">
+              <input type="text" class="form-control" placeholder="Название" aria-label="Название"
+                     [(ngModel)]="eventName"
+                     (ngModelChange)="updateSelected()"
+                     name="eventName">
             </div>
             <div class="col-5">
-              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание" [(ngModel)]="eventDescription" name="eventDescription">
+              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание"
+                     [(ngModel)]="eventDescription"
+                     (ngModelChange)="updateSelected()"
+                     name="eventDescription">
             </div>
             <div class="col-2">
-              <input type="number" class="form-control" placeholder="P" aria-label="P" [(ngModel)]="eventProbability" name="eventProbability">
+              <input type="number" class="form-control" placeholder="P" aria-label="P"
+                     [(ngModel)]="eventProbability"
+                     (ngModelChange)="updateSelected()"
+                     name="eventProbability">
             </div>
           </form>
         </ng-template>
         <ng-template ngSwitchDefault>
-          <select [(ngModel)]="operatorOption" class="form-select">
+          <select [(ngModel)]="operatorOption" (ngModelChange)="updateSelected()" class="form-select">
             <option value="OR">OR</option>
             <option value="AND">AND</option>
           </select>
@@ -41,7 +56,7 @@
       </div>
     </div>
     <div class="col-1">
-      <button type="button" class="btn btn-primary w-100" (click)="addNode()">+</button>
+      <button type="button" class="btn btn-primary w-100" (click)="addNode()" [disabled]="selectedNode != undefined">+</button>
       <input type="file" hidden #fileInput (change)="readFile($event)">
       <button type="button" class="btn btn-primary w-100" (click)="fileInput.click()">Импорт</button>
       <button type="button" class="btn btn-primary w-100" (click)="saveFile()">Экспорт</button>

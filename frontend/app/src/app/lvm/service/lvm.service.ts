@@ -5,12 +5,14 @@ import {Observable} from "rxjs";
 
 export class LvmTreeNode {
 
+  public id: string = '';
   public name: string = '';
   public description: string = '';
   public probability: number = -1;
   public type: string = 'none';
 
-  constructor(name: string, description: string, probability: number, type?: string) {
+  constructor(id: string, name: string, description: string, probability: number, type?: string) {
+    this.id = id;
     this.name = name;
     this.description = description;
     this.probability = probability;
@@ -42,7 +44,7 @@ export class DetailedLvmTreeNode extends LvmTreeNode {
 
   constructor(node: LvmTreeNode, x?: number, y?: number, color?: any) {
     super(
-      node.name, node.description, node.probability
+      node.id, node.name, node.description, node.probability
     );
     this.x = x;
     this.y = y;

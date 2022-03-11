@@ -20,10 +20,14 @@ export class LvmTreeComponent implements OnInit {
   public eventName: string = '';
   public eventDescription: string = '';
   public eventProbability: number = 0;
+  public selectedNode?: Node;
 
   public allEdges: LvmTreeEdge[] = [];
   public lvmEdges: LvmTreeEdge[] = [];
   public lvmNodes: LvmTreeNode[] = [];
+  public selectedLvmNode?: LvmTreeNode;
+
+  public nodeId: number = 1;
 
   constructor(
     private visNetworkService: VisNetworkService,
@@ -44,8 +48,8 @@ export class LvmTreeComponent implements OnInit {
           if (edgeData.from === edgeData.to) {
             return
           }
-          const sourceNode = this.lvmNodes.find((n) => n.name == edgeData.from);
-          const targetNode = this.lvmNodes.find((n) => n.name == edgeData.to);
+          const sourceNode = this.lvmNodes.find((n) => n.id == edgeData.from);
+          const targetNode = this.lvmNodes.find((n) => n.id == edgeData.to);
           if (sourceNode && targetNode) {
             if (!sourceNode.isLogicOperator() && !targetNode.isLogicOperator()) {
               return;
@@ -53,21 +57,21 @@ export class LvmTreeComponent implements OnInit {
             if (sourceNode.isLogicOperator() && targetNode.isLogicOperator()) {
               return;
             }
-            if (this.allEdges.find((n => n.to == targetNode.name && n.from == sourceNode.name))) {
+            if (this.allEdges.find((n => n.to == targetNode.id && n.from == sourceNode.id))) {
               return;
             }
             const logicOperator = sourceNode.isLogicOperator() ? sourceNode : targetNode;
             const eventNode = sourceNode.isLogicOperator() ? targetNode : sourceNode;
-            const operatorParent = this.allEdges.find((n) => n.to == logicOperator.name);
+            const operatorParent = this.allEdges.find((n) => n.to == logicOperator.id);
             if (targetNode.isLogicOperator() && operatorParent) {
               return;
             }
             if (operatorParent) {
               this.lvmEdges.push(
-                new LvmTreeEdge(operatorParent.from, eventNode.name, logicOperator.type, eventNode.probability)
+                new LvmTreeEdge(operatorParent.from, eventNode.id, logicOperator.type, eventNode.probability)
               );
             }
-            this.allEdges.push(new LvmTreeEdge(sourceNode.name, targetNode.name, logicOperator.type, targetNode.probability));
+            this.allEdges.push(new LvmTreeEdge(sourceNode.id, targetNode.id, logicOperator.type, targetNode.probability));
             callback(edgeData);
           }
         }
@@ -79,29 +83,46 @@ export class LvmTreeComponent implements OnInit {
   initialized() {
     this.visNetworkService.on(this.visNetwork, 'selectNode');
     this.visNetworkService.on(this.visNetwork, 'deselectNode');
-    this.visNetworkService.selectNode.subscribe((_) =>
-      this.visNetworkService.addEdgeMode(this.visNetwork)
+
+    this.visNetworkService.selectNode.subscribe((node) => {
+        let nodeId = node[1].nodes[0];
+        this.selectedLvmNode = this.lvmNodes.find(n => n.id == nodeId);
+        this.selectedNode = this.nodes.get().find(item => item.id == nodeId);
+        if (this.selectedLvmNode) {
+          if (this.selectedLvmNode.isLogicOperator()) {
+            this.option = 'operator';
+            this.operatorOption = this.selectedLvmNode.name;
+          } else {
+            this.option = this.selectedLvmNode.probability > -1 ? 'initEvent' : 'event';
+          }
+          this.eventName = this.selectedLvmNode.name;
+          this.eventDescription = this.selectedLvmNode.description;
+          this.eventProbability = this.selectedLvmNode.probability;
+        }
+        this.visNetworkService.addEdgeMode(this.visNetwork);
+      }
     );
-    this.visNetworkService.deselectNode.subscribe((_) =>
-      this.visNetworkService.disableEditMode(this.visNetwork)
-    );
+    this.visNetworkService.deselectNode.subscribe((_) => {
+      this.unSelectNode();
+      this.clearValues();
+      this.visNetworkService.disableEditMode(this.visNetwork);
+    });
   }
 
   addNode() {
-
+    const newId = 'n' + this.nodeId++;
     if (this.option === 'event' || this.option === 'initEvent') {
       this.addEventNode(new LvmTreeNode(
-        this.eventName, this.eventDescription,
+        newId, this.eventName, this.eventDescription,
         this.option === 'initEvent' ? this.eventProbability : -1
       ));
     } else {
       this.addOperatorNode(new LvmTreeNode(
-        `${this.operatorOption}${Math.random() * 1000000}`,
-        this.operatorOption, -1, this.operatorOption
+        newId, this.operatorOption, '', -1, this.operatorOption
       ));
     }
-
     this.visNetworkService.enableEditMode(this.visNetwork);
+    this.clearValues();
   }
 
   private addEventNode(node: LvmTreeNode, x?: number, y?: number) {
@@ -109,14 +130,14 @@ export class LvmTreeComponent implements OnInit {
     let text = `${node.name}\n${node.description}`;
     text += isInit ? `\nP = ${node.probability}` : '';
     this.drawNode({
-      id: node.name, label: text, shape: 'box', color: isInit ? 'red' : 'green',
+      id: node.id, label: text, shape: 'box', color: isInit ? 'red' : 'green',
       x: x, y: y
     }, node);
   }
 
   private addOperatorNode(node: LvmTreeNode, x?: number, y?: number) {
     this.drawNode({
-      id: node.name, label: node.description, shape: 'box',
+      id: node.id, label: node.name, shape: 'box',
       x: x, y: y
     }, node)
   }
@@ -141,14 +162,18 @@ export class LvmTreeComponent implements OnInit {
         this.lvmEdges = [];
         this.allEdges = [];
 
+        let maxId = 0;
         result.nodes.forEach((node) => {
           const type = node.type;
+          const id = Number(node.id.slice(1));
+          maxId = id > maxId ? id : maxId;
           if ("none" == type) {
-            this.addEventNode(new LvmTreeNode(node.name, node.description, node.probability, node.type), node.x, node.y)
+            this.addEventNode(new LvmTreeNode(node.id, node.name, node.description, node.probability, node.type), node.x, node.y)
           } else {
-            this.addOperatorNode(new LvmTreeNode(node.name, node.description, node.probability, node.type), node.x, node.y)
+            this.addOperatorNode(new LvmTreeNode(node.id, node.name, node.description, node.probability, node.type), node.x, node.y)
           }
         })
+        this.nodeId = maxId + 1;
 
         result.allEdges.forEach((edge) => {
           this.edges.add({ from: edge.from, to: edge.to });
@@ -164,6 +189,36 @@ export class LvmTreeComponent implements OnInit {
   saveFile() {
     this.visNetworkService.storePositions(this.visNetwork);
     this.lvmService.saveTreeToFile(this.lvmNodes, this.nodes, this.allEdges, this.lvmEdges);
+  }
+
+  updateSelected() {
+    if (this.selectedLvmNode && this.selectedNode) {
+
+      this.selectedLvmNode.name = this.selectedLvmNode.isLogicOperator() ? this.operatorOption: this.eventName;
+      this.selectedLvmNode.description = this.eventDescription;
+      this.selectedLvmNode.probability = this.eventProbability;
+
+      const isInit = this.selectedLvmNode.probability != -1;
+      let text = `${this.selectedLvmNode.name}\n${this.selectedLvmNode.description}`;
+      text += isInit ? `\nP = ${this.selectedLvmNode.probability}` : ''.trim();
+      this.selectedNode.label = text;
+
+      // @ts-ignore
+      this.nodes.updateOnly([{ id: this.selectedNode.id, label: text} ]);
+      this.visNetworkService.redraw(this.visNetwork);
+    }
+
+  }
+
+  unSelectNode() {
+    this.selectedLvmNode = undefined;
+    this.selectedNode = undefined;
+  }
+
+  clearValues() {
+    this.eventName = '';
+    this.eventDescription = '';
+    this.eventProbability = 0;
   }
 
 }
