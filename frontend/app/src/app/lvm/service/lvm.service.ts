@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {DataSet, Node} from "ngx-vis";
 import {FileService} from "../../shared/FileService";
 import {Observable} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
 
 export class LvmTreeNode {
 
@@ -9,7 +11,7 @@ export class LvmTreeNode {
   public name: string = '';
   public description: string = '';
   public probability: number = -1;
-  public type: string = 'none';
+  public type: string = 'NONE';
 
   constructor(id: string, name: string, description: string, probability: number, type?: string) {
     this.id = id;
@@ -22,7 +24,7 @@ export class LvmTreeNode {
   }
 
   public isLogicOperator(): boolean {
-    return this.type !== 'none';
+    return this.type !== 'NONE';
   }
 
 }
@@ -61,12 +63,24 @@ class FileDTO {
   }
 }
 
+export class LvmNodeResult {
+  constructor(public nodeName: string,
+              public logicalFunction: string,
+              public notAndLogicalFunction: string,
+              public probabilityFunction: string,
+              public resultProbability: number) {
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LvmService {
 
-  constructor(private fileService: FileService) { }
+  private readonly api: string = environment.apiUrl + '/lvm';
+
+  constructor(private fileService: FileService,
+              private httpClient: HttpClient) { }
 
   saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[], lvmEdges: LvmTreeEdge[]) {
     let nodesToSave = lvmNodes.map(lvmNode => {
@@ -81,6 +95,25 @@ export class LvmService {
 
   restoreFromFile(file: File): Observable<FileDTO> {
     return this.fileService.restoreObject<FileDTO>(file);
+  }
+
+  calculateTree(edges: LvmTreeEdge[], nodes: LvmTreeNode[]): Observable<LvmNodeResult[]> {
+    const namePerId = new Map<string, string>();
+    const probabilityPerNode: {[k: string]: any} = {};
+    nodes.forEach(n => {
+      namePerId.set(n.id, n.name);
+      if (n.probability > -1) {
+        probabilityPerNode[n.name] = n.probability;
+      }
+    });
+    const transformedEdges = edges.map(e => {
+      // @ts-ignore
+      return new LvmTreeEdge(e.id, namePerId.get(e.from), namePerId.get(e.to), e.type, e.probability);
+    })
+    return this.httpClient.post<LvmNodeResult[]>(`${this.api}/calculate-tree`, {
+      edges: transformedEdges,
+      nodeProbabilities: probabilityPerNode
+    })
   }
 
 }

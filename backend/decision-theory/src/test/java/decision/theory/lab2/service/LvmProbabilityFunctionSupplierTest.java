@@ -30,14 +30,14 @@ class LvmProbabilityFunctionSupplierTest {
                 "Compound1", LvmNodeRelation.AND, List.of(
                 new LvmTree(
                         "Compound2", LvmNodeRelation.OR, List.of(
-                        new LvmTree("x1", LvmNodeRelation.EMPTY),
-                        new LvmTree("x2", LvmNodeRelation.EMPTY)
+                        new LvmTree("x1", LvmNodeRelation.NONE),
+                        new LvmTree("x2", LvmNodeRelation.NONE)
                 )
                 ),
                 new LvmTree(
                         "Compound3", LvmNodeRelation.OR, List.of(
-                        new LvmTree("x3", LvmNodeRelation.EMPTY),
-                        new LvmTree("x4", LvmNodeRelation.EMPTY)
+                        new LvmTree("x3", LvmNodeRelation.NONE),
+                        new LvmTree("x4", LvmNodeRelation.NONE)
                     )
                 )
             )

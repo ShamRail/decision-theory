@@ -11,10 +11,10 @@ class LvmTreeTest {
 
     @Test
     public void whenIterateThrowSeven() {
-        LvmTree node4 = new LvmTree("4", LvmNodeRelation.EMPTY);
-        LvmTree node5 = new LvmTree("5", LvmNodeRelation.EMPTY);
-        LvmTree node6 = new LvmTree("6", LvmNodeRelation.EMPTY);
-        LvmTree node7 = new LvmTree("7", LvmNodeRelation.EMPTY);
+        LvmTree node4 = new LvmTree("4", LvmNodeRelation.NONE);
+        LvmTree node5 = new LvmTree("5", LvmNodeRelation.NONE);
+        LvmTree node6 = new LvmTree("6", LvmNodeRelation.NONE);
+        LvmTree node7 = new LvmTree("7", LvmNodeRelation.NONE);
         LvmTree node2 = new LvmTree("2", LvmNodeRelation.AND, List.of(node4, node5));
         LvmTree node3 = new LvmTree("3", LvmNodeRelation.AND, List.of(node6, node7));
         LvmTree root = new LvmTree(

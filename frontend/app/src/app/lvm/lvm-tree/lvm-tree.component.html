@@ -59,7 +59,8 @@
       <button type="button" class="btn btn-primary w-100" (click)="addNode()" [disabled]="selectedNode != undefined">+</button>
       <input type="file" hidden #fileInput (change)="readFile($event)">
       <button type="button" class="btn btn-primary w-100" (click)="fileInput.click()">Импорт</button>
-      <button type="button" class="btn btn-primary w-100" (click)="saveFile()">Экспорт</button>
+      <button type="button" class="btn btn-primary w-100">Экспорт</button>
+      <button type="button" class="btn btn-primary w-100" (click)="calculate()">Расчитать</button>
       <button type="button" class="btn btn-danger w-100" (click)="delete()"
               [hidden]="selectedNode == undefined && selectedEdge == undefined">Удалить</button>
     </div>

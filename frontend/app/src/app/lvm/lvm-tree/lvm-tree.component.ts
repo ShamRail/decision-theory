@@ -207,7 +207,7 @@ export class LvmTreeComponent implements OnInit {
           const type = node.type;
           const id = Number(node.id.slice(1));
           maxId = id > maxId ? id : maxId;
-          if ("none" == type) {
+          if ("NONE" == type) {
             this.addEventNode(new LvmTreeNode(node.id, node.name, node.description, node.probability, node.type), node.x, node.y)
           } else {
             this.addOperatorNode(new LvmTreeNode(node.id, node.name, node.description, node.probability, node.type), node.x, node.y)
@@ -235,9 +235,11 @@ export class LvmTreeComponent implements OnInit {
   updateSelected() {
     if (this.selectedLvmNode && this.selectedNode) {
 
+      console.log("Update node: ", this.selectedLvmNode);
       this.selectedLvmNode.name = this.selectedLvmNode.isLogicOperator() ? this.operatorOption: this.eventName;
       this.selectedLvmNode.description = this.eventDescription;
       this.selectedLvmNode.probability = this.eventProbability;
+      this.selectedLvmNode.type = this.selectedLvmNode.isLogicOperator() ? this.operatorOption : this.selectedLvmNode.type;
 
       const isInit = this.selectedLvmNode.probability != -1;
       let text = `${this.selectedLvmNode.name}\n${this.selectedLvmNode.description}`;
@@ -263,18 +265,10 @@ export class LvmTreeComponent implements OnInit {
   }
 
   delete() {
-
-    // 1. Найти все ребра, которые входят и исходят из узла
-    // 2. Удалить эти ребра
-    // 3. Удалить сам узел:
-    // - из lvmEdges
-    // - из nodes
-
     console.log("Try to remove. Node: ", this.selectedNode, " Edge: ", this.selectedEdge);
     if (this.selectedNode) {
       console.log("Remove node: ", this.selectedNode);
       const id = this.selectedNode.id;
-
       const edgesToRemove = this.edges.get().filter(e => e.from == id || e.to == id);
       edgesToRemove.forEach(e => this.removeEdge(e.from, e.to, e.id));
       // @ts-ignore
@@ -303,4 +297,9 @@ export class LvmTreeComponent implements OnInit {
     this.allEdges = this.allEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
   }
 
+  calculate() {
+    this.lvmService.calculateTree(this.lvmEdges, this.lvmNodes).subscribe((result) => {
+      console.log(result);
+    });
+  }
 }

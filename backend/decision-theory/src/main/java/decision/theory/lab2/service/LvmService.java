@@ -7,14 +7,14 @@ import decision.theory.lab2.interfaces.ILvmTreeBuilder;
 import decision.theory.lab2.model.LvmNodeResult;
 import decision.theory.lab2.model.LvmTree;
 import decision.theory.lab2.model.LvmTreeEdge;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Component
+@Service
 public class LvmService implements ILvmService {
 
     private final ILvmTreeBuilder lvmTreeBuilder;

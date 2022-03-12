@@ -18,10 +18,10 @@ public class LvmTreeBuilder implements ILvmTreeBuilder {
             var fromParentFound = false;
             var toParentFound = false;
             for (var edgeJ : treeEdges) {
-                if (edgeJ.to().equals(edgeI.from())) {
+                if (edgeJ.getTo().equals(edgeI.getFrom())) {
                     fromParentFound = true;
                 }
-                if (edgeJ.to().equals(edgeI.to())) {
+                if (edgeJ.getTo().equals(edgeI.getTo())) {
                     toParentFound = true;
                 }
                 if (fromParentFound && toParentFound) {
@@ -29,8 +29,8 @@ public class LvmTreeBuilder implements ILvmTreeBuilder {
                 }
             }
             if (!fromParentFound || !toParentFound) {
-                var name = !fromParentFound ? edgeI.from() : edgeI.to();
-                root = new LvmTree(name, LvmNodeRelation.EMPTY);
+                var name = !fromParentFound ? edgeI.getFrom() : edgeI.getTo();
+                root = new LvmTree(name, LvmNodeRelation.NONE);
                 break;
             }
         }
@@ -43,12 +43,12 @@ public class LvmTreeBuilder implements ILvmTreeBuilder {
     private LvmTree restoreTree(LvmTree subTree, List<LvmTreeEdge> treeEdges) {
         var number = subTree.getName();
         for (var edge : treeEdges) {
-            if (edge.from().equals(number)) {
-                if (subTree.getChildRelation() == LvmNodeRelation.EMPTY) {
-                    subTree.setChildRelation(edge.relation());
+            if (edge.getFrom().equals(number)) {
+                if (subTree.getChildRelation() == LvmNodeRelation.NONE) {
+                    subTree.setChildRelation(edge.getType());
                 }
-                var name = edge.to();
-                subTree.getChildren().add(new LvmTree(name, LvmNodeRelation.EMPTY));
+                var name = edge.getTo();
+                subTree.getChildren().add(new LvmTree(name, LvmNodeRelation.NONE));
             }
         }
         for (var child : subTree.getChildren()) {
