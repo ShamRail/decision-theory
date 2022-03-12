@@ -21,13 +21,16 @@ export class LvmTreeComponent implements OnInit {
   public eventDescription: string = '';
   public eventProbability: number = 0;
   public selectedNode?: Node;
+  public selectedEdge?: Edge;
 
   public allEdges: LvmTreeEdge[] = [];
   public lvmEdges: LvmTreeEdge[] = [];
   public lvmNodes: LvmTreeNode[] = [];
   public selectedLvmNode?: LvmTreeNode;
+  public selectedLvmEdge?: LvmTreeEdge;
 
   public nodeId: number = 1;
+  public edgePerId: Map<String, {from: string, to: string}> = new Map<String, {from: string, to: string}>();
 
   constructor(
     private visNetworkService: VisNetworkService,
@@ -37,6 +40,9 @@ export class LvmTreeComponent implements OnInit {
   ngOnInit(): void {
     this.visNetworkOptions = {
       autoResize: false,
+      interaction: {
+        selectConnectedEdges: false
+      },
       edges: {
         arrows: { to: true }
       },
@@ -46,18 +52,23 @@ export class LvmTreeComponent implements OnInit {
       manipulation: {
         addEdge: (edgeData: any, callback: any) => {
           if (edgeData.from === edgeData.to) {
-            return
+            return;
           }
           const sourceNode = this.lvmNodes.find((n) => n.id == edgeData.from);
           const targetNode = this.lvmNodes.find((n) => n.id == edgeData.to);
+          console.log("Bind edges: ", sourceNode, targetNode);
           if (sourceNode && targetNode) {
             if (!sourceNode.isLogicOperator() && !targetNode.isLogicOperator()) {
+              console.log("Can't bind edges. Reason: both are events");
               return;
             }
             if (sourceNode.isLogicOperator() && targetNode.isLogicOperator()) {
+              console.log("Can't bind edges. Reason: both are logic operators");
               return;
             }
-            if (this.allEdges.find((n => n.to == targetNode.id && n.from == sourceNode.id))) {
+            if (this.allEdges.find((n => n.to == targetNode.id && n.from == sourceNode.id
+                                      || n.from == targetNode.id && n.to == sourceNode.id))) {
+              console.log("Can't bind edges. Reason: edge is already existed");
               return;
             }
             const logicOperator = sourceNode.isLogicOperator() ? sourceNode : targetNode;
@@ -68,11 +79,12 @@ export class LvmTreeComponent implements OnInit {
             }
             if (operatorParent) {
               this.lvmEdges.push(
-                new LvmTreeEdge(operatorParent.from, eventNode.id, logicOperator.type, eventNode.probability)
+                new LvmTreeEdge(edgeData.id, operatorParent.from, eventNode.id, logicOperator.type, eventNode.probability)
               );
             }
-            this.allEdges.push(new LvmTreeEdge(sourceNode.id, targetNode.id, logicOperator.type, targetNode.probability));
+            this.allEdges.push(new LvmTreeEdge(edgeData.id, sourceNode.id, targetNode.id, logicOperator.type, targetNode.probability));
             callback(edgeData);
+            this.edgePerId.set(edgeData.id, { from: edgeData.from, to: edgeData.to })
           }
         }
       }
@@ -83,11 +95,15 @@ export class LvmTreeComponent implements OnInit {
   initialized() {
     this.visNetworkService.on(this.visNetwork, 'selectNode');
     this.visNetworkService.on(this.visNetwork, 'deselectNode');
+    this.visNetworkService.on(this.visNetwork, 'selectEdge');
+    this.visNetworkService.on(this.visNetwork, 'deselectEdge');
 
     this.visNetworkService.selectNode.subscribe((node) => {
         let nodeId = node[1].nodes[0];
         this.selectedLvmNode = this.lvmNodes.find(n => n.id == nodeId);
         this.selectedNode = this.nodes.get().find(item => item.id == nodeId);
+        console.log("Chosen node: ", this.selectedNode, this.selectedLvmNode);
+        this.unSelectEdge();
         if (this.selectedLvmNode) {
           if (this.selectedLvmNode.isLogicOperator()) {
             this.option = 'operator';
@@ -102,11 +118,34 @@ export class LvmTreeComponent implements OnInit {
         this.visNetworkService.addEdgeMode(this.visNetwork);
       }
     );
+
+    this.visNetworkService.selectEdge.subscribe((event) => {
+      const edge = this.edgePerId.get(event[1].edges[0]);
+      console.log("Chosen edge: ", edge);
+      this.unSelectNode();
+      if (edge) {
+        this.selectedLvmEdge = this.allEdges.find(e =>
+          e.from == edge.from && e.to == edge.to ||
+          e.from == edge.to && e.to == edge.from
+        );
+        this.selectedEdge = this.edges.get().find(e =>
+          e.from == edge.from && e.to == edge.to ||
+          e.from == edge.to && e.to == edge.from
+        );
+        console.log("Found edges: ", this.selectedLvmEdge, this.selectedEdge);
+      }
+    });
+
     this.visNetworkService.deselectNode.subscribe((_) => {
       this.unSelectNode();
       this.clearValues();
       this.visNetworkService.disableEditMode(this.visNetwork);
     });
+
+    this.visNetworkService.deselectEdge.subscribe((_) => {
+      this.unSelectEdge();
+    })
+
   }
 
   addNode() {
@@ -161,6 +200,7 @@ export class LvmTreeComponent implements OnInit {
         this.lvmNodes = [];
         this.lvmEdges = [];
         this.allEdges = [];
+        this.edgePerId.clear();
 
         let maxId = 0;
         result.nodes.forEach((node) => {
@@ -177,6 +217,7 @@ export class LvmTreeComponent implements OnInit {
 
         result.allEdges.forEach((edge) => {
           this.edges.add({ from: edge.from, to: edge.to });
+          this.edgePerId.set(edge.id, { from: edge.from, to: edge.to });
         })
         this.visNetworkService.redraw(this.visNetwork);
         this.allEdges = result.allEdges;
@@ -219,6 +260,47 @@ export class LvmTreeComponent implements OnInit {
     this.eventName = '';
     this.eventDescription = '';
     this.eventProbability = 0;
+  }
+
+  delete() {
+
+    // 1. Найти все ребра, которые входят и исходят из узла
+    // 2. Удалить эти ребра
+    // 3. Удалить сам узел:
+    // - из lvmEdges
+    // - из nodes
+
+    console.log("Try to remove. Node: ", this.selectedNode, " Edge: ", this.selectedEdge);
+    if (this.selectedNode) {
+      console.log("Remove node: ", this.selectedNode);
+      const id = this.selectedNode.id;
+
+      const edgesToRemove = this.edges.get().filter(e => e.from == id || e.to == id);
+      edgesToRemove.forEach(e => this.removeEdge(e.from, e.to, e.id));
+      // @ts-ignore
+      this.nodes.remove(id);
+      this.lvmNodes = this.lvmNodes.filter(n => n.id != id);
+      this.unSelectNode();
+    } else if (this.selectedEdge) {
+      console.log("Remove edge: ", this.selectedEdge);
+      this.removeEdge(this.selectedEdge.from, this.selectedEdge.to, this.selectedEdge.id);
+      this.unSelectEdge();
+    } else {
+      console.log("Nothing to remove");
+    }
+  }
+
+  unSelectEdge() {
+    this.selectedEdge = undefined;
+    this.selectedLvmEdge = undefined;
+  }
+
+  removeEdge(from: any, to: any, id: any) {
+    const ids = [from, to];
+    // @ts-ignore
+    this.edges.remove(id);
+    this.lvmEdges = this.lvmEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
+    this.allEdges = this.allEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
   }
 
 }

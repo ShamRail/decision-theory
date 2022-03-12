@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {DataSet, Edge, Node} from "ngx-vis";
+import {DataSet, Node} from "ngx-vis";
 import {FileService} from "../../shared/FileService";
 import {Observable} from "rxjs";
 
@@ -29,6 +29,7 @@ export class LvmTreeNode {
 
 export class LvmTreeEdge {
   constructor(
+    public id: string,
     public from: string,
     public to: string,
     public type: string,
@@ -69,7 +70,7 @@ export class LvmService {
 
   saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[], lvmEdges: LvmTreeEdge[]) {
     let nodesToSave = lvmNodes.map(lvmNode => {
-      let node = nodes.get().find((item) => item.id == lvmNode.name)
+      let node = nodes.get().find((item) => item.id == lvmNode.id)
       if (!node) {
         throw new Error("Invalid id");
       }
