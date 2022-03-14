@@ -37,6 +37,8 @@ export class LvmTreeComponent implements OnInit {
     private lvmService: LvmService) {
   }
 
+  private readonly REPLACE_REGEX = /\nP = .*/;
+
   ngOnInit(): void {
     this.visNetworkOptions = {
       autoResize: false,
@@ -85,6 +87,19 @@ export class LvmTreeComponent implements OnInit {
       }
     };
     this.visNetworkData = {nodes: this.nodes, edges: this.edges};
+    this.lvmService.subscribeOnResultGot((results) => {
+      results.forEach(result => {
+        const lvmNode = this.lvmNodes.find(n => n.name == result.nodeName);
+        if (lvmNode) {
+          const node = this.nodes.get().find(n => n.id == lvmNode.id);
+          lvmNode.description = lvmNode.description.replace(this.REPLACE_REGEX, "");
+          lvmNode.description += `\nP = ${result.resultProbability.toFixed(3)}`;
+          if (node) {
+            this.nodes.updateOnly([{ id: node.id, label: `${lvmNode.name}\n${lvmNode.description}`} ]);
+          }
+        }
+      });
+    })
   }
 
   initialized() {

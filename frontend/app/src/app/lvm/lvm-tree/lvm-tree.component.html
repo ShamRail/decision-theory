@@ -18,10 +18,11 @@
                      name="eventName">
             </div>
             <div class="col-6">
-              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание"
+              <textarea type="text" class="form-control" placeholder="Описание" aria-label="Описание"
                      [(ngModel)]="eventDescription"
                      (ngModelChange)="updateSelected()"
                      name="eventDescription">
+              </textarea>
             </div>
           </form>
         </ng-template>
@@ -34,10 +35,11 @@
                      name="eventName">
             </div>
             <div class="col-5">
-              <input type="text" class="form-control" placeholder="Описание" aria-label="Описание"
-                     [(ngModel)]="eventDescription"
-                     (ngModelChange)="updateSelected()"
-                     name="eventDescription">
+              <textarea type="text" class="form-control" placeholder="Описание" aria-label="Описание"
+                        [(ngModel)]="eventDescription"
+                        (ngModelChange)="updateSelected()"
+                        name="eventDescription">
+              </textarea>
             </div>
             <div class="col-2">
               <input type="number" class="form-control" placeholder="P" aria-label="P"
