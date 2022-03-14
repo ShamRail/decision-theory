@@ -47,7 +47,7 @@ public class LvmProbabilityFunctionSupplier implements ILvmProbabilityFunctionSu
     }
 
     private String truncateFirstLastBracket(String input) {
-        return input.substring(1, input.length() - 1);
+        return input.startsWith("(") && input.endsWith(")") ? input.substring(1, input.length() - 1) : input;
     }
 
     @Override

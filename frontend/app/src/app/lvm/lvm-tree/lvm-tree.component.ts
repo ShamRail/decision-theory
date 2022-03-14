@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Data, DataSet, Edge, Node, Options, VisNetworkService} from "ngx-vis";
-import {LvmService, LvmTreeEdge, LvmTreeNode} from "../service/lvm.service";
+import {LvmNodeResult, LvmService, LvmTreeEdge, LvmTreeNode} from "../service/lvm.service";
 
 @Component({
   selector: 'app-lvm-tree',
@@ -296,8 +296,7 @@ export class LvmTreeComponent implements OnInit {
   }
 
   calculate() {
-    this.lvmService.calculateTree(this.allEdges, this.lvmNodes).subscribe((result) => {
-      console.log(result);
-    });
+    this.lvmService.calculateTree(this.allEdges, this.lvmNodes);
   }
+
 }

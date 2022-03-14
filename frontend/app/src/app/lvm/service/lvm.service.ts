@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {DataSet, Node} from "ngx-vis";
 import {FileService} from "../../shared/FileService";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 
@@ -78,6 +78,8 @@ export class LvmService {
 
   private readonly api: string = environment.apiUrl + '/lvm';
 
+  private onResultGot: Subject<LvmNodeResult[]> = new Subject<LvmNodeResult[]>();
+
   constructor(private fileService: FileService,
               private httpClient: HttpClient) { }
 
@@ -96,7 +98,11 @@ export class LvmService {
     return this.fileService.restoreObject<FileDTO>(file);
   }
 
-  calculateTree(edges: LvmTreeEdge[], nodes: LvmTreeNode[]): Observable<LvmNodeResult[]> {
+  subscribeOnResultGot(handler: (data: LvmNodeResult[]) => void) {
+    this.onResultGot.subscribe(handler);
+  }
+
+  calculateTree(edges: LvmTreeEdge[], nodes: LvmTreeNode[]) {
     const namePerId = new Map<string, string>();
     const probabilityPerNode: {[k: string]: any} = {};
     nodes.forEach(n => {
@@ -114,9 +120,10 @@ export class LvmService {
       edges: transformedEdges,
       nodeProbabilities: probabilityPerNode
     })
+      .subscribe((result) => this.onResultGot.next(result));
   }
 
-  formAdjancentList(nodes: LvmTreeNode[], edges: LvmTreeEdge[]): LvmTreeEdge[] {
+  private formAdjancentList(nodes: LvmTreeNode[], edges: LvmTreeEdge[]): LvmTreeEdge[] {
     const result: LvmTreeEdge[] = [];
     for (let node of nodes) {
       if (node.isLogicOperator()) {
