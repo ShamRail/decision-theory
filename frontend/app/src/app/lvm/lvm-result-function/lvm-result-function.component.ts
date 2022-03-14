@@ -9,13 +9,24 @@ import {LvmNodeResult, LvmService} from "../service/lvm.service";
 export class LvmResultFunctionComponent implements OnInit {
 
   public mainResult?: LvmNodeResult;
+  public probability?: number;
 
   constructor(private lvmService: LvmService) { }
 
   ngOnInit(): void {
     this.lvmService.subscribeOnResultGot((data) => {
       this.mainResult = data[0];
+      this.probability = data[0].resultProbability;
     });
   }
 
+  getRiskResult(): string {
+    const loss = this.lvmService.getLoss();
+    if (!loss) {
+      return 'Неверно ввведены потери';
+    }
+    // @ts-ignore
+    const risk = loss * this.probability;
+    return `${loss} * ${ this.probability?.toFixed(3) } = ${ risk.toFixed(3) }`
+  }
 }

@@ -58,7 +58,8 @@ export class DetailedLvmTreeNode extends LvmTreeNode {
 
 class FileDTO {
   constructor(public nodes: DetailedLvmTreeNode[],
-              public allEdges: LvmTreeEdge[]) {
+              public allEdges: LvmTreeEdge[],
+              public loss: any) {
   }
 }
 
@@ -78,12 +79,14 @@ export class LvmService {
 
   private readonly api: string = environment.apiUrl + '/lvm';
 
+  private loss?: number;
+
   private onResultGot: Subject<LvmNodeResult[]> = new Subject<LvmNodeResult[]>();
 
   constructor(private fileService: FileService,
               private httpClient: HttpClient) { }
 
-  saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[]) {
+  saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[], loss?: number) {
     let nodesToSave = lvmNodes.map(lvmNode => {
       let node = nodes.get().find((item) => item.id == lvmNode.id)
       if (!node) {
@@ -91,7 +94,8 @@ export class LvmService {
       }
       return new DetailedLvmTreeNode(lvmNode, node.x, node.y, node.color);
     });
-    this.fileService.saveToFile(new FileDTO(nodesToSave, allEdges))
+    console.log(new FileDTO(nodesToSave, allEdges, loss));
+    this.fileService.saveToFile(new FileDTO(nodesToSave, allEdges, loss))
   }
 
   restoreFromFile(file: File): Observable<FileDTO> {
@@ -139,6 +143,21 @@ export class LvmService {
       }
     }
     return result;
+  }
+
+  saveLoss(value?: number) {
+    this.loss = value;
+  }
+
+  calculateRisk(probability: number): any {
+    if (!this.loss) {
+      return undefined;
+    }
+    return probability * this.loss;
+  }
+
+  getLoss(): any {
+    return this.loss;
   }
 
 }

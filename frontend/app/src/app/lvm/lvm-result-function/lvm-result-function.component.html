@@ -4,6 +4,7 @@
     <p><b>ФАЛ(И-НЕ): </b> {{ mainResult.notAndLogicalFunction }} </p>
     <p><b>Вер. ф-я: </b> {{ mainResult.probabilityFunction }}</p>
     <p><b>P: </b> {{ mainResult.resultProbability.toFixed(3) }}</p>
+    <p *ngIf="probability"><b>R = </b>{{ getRiskResult() }}</p>
   </div>
   <ng-template #stub>
     <div style="color: red">Дерево еще не расчитано</div>

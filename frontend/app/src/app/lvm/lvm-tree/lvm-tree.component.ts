@@ -27,6 +27,7 @@ export class LvmTreeComponent implements OnInit {
   public lvmNodes: LvmTreeNode[] = [];
   public selectedLvmNode?: LvmTreeNode;
   public selectedLvmEdge?: LvmTreeEdge;
+  public loss?: number;
 
   public nodeId: number = 1;
   public edgePerId: Map<String, {from: string, to: string}> = new Map<String, {from: string, to: string}>();
@@ -214,6 +215,8 @@ export class LvmTreeComponent implements OnInit {
         })
         this.visNetworkService.redraw(this.visNetwork);
         this.allEdges = result.allEdges;
+        this.loss = result.loss;
+        this.lvmService.saveLoss(this.loss);
 
         console.log("Restored edges: ", this.allEdges);
       })
@@ -222,7 +225,7 @@ export class LvmTreeComponent implements OnInit {
 
   saveFile() {
     this.visNetworkService.storePositions(this.visNetwork);
-    this.lvmService.saveTreeToFile(this.lvmNodes, this.nodes, this.allEdges);
+    this.lvmService.saveTreeToFile(this.lvmNodes, this.nodes, this.allEdges, this.loss);
   }
 
   updateSelected() {
@@ -297,6 +300,11 @@ export class LvmTreeComponent implements OnInit {
 
   calculate() {
     this.lvmService.calculateTree(this.allEdges, this.lvmNodes);
+  }
+
+  saveLoss($event: any) {
+    this.loss = $event.target.value;
+    this.lvmService.saveLoss(this.loss);
   }
 
 }
