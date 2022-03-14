@@ -215,6 +215,7 @@ export class LvmTreeComponent implements OnInit {
         this.visNetworkService.redraw(this.visNetwork);
         this.allEdges = result.allEdges;
 
+        console.log("Restored edges: ", this.allEdges);
       })
     }
   }
@@ -275,7 +276,6 @@ export class LvmTreeComponent implements OnInit {
       this.lvmNodes = this.lvmNodes.filter(n => n.id != id);
       this.unSelectNode();
     } else if (this.selectedEdge) {
-      console.log("Remove edge: ", this.selectedEdge);
       this.removeEdge(this.selectedEdge.from, this.selectedEdge.to, this.selectedEdge.id);
       this.unSelectEdge();
     } else {
@@ -289,10 +289,10 @@ export class LvmTreeComponent implements OnInit {
   }
 
   removeEdge(from: any, to: any, id: any) {
-    const ids = [from, to];
     // @ts-ignore
+    console.log("Remove edge: (", from, ", ", to, ")");
     this.edges.remove(id);
-    this.allEdges = this.allEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
+    this.allEdges = this.allEdges.filter(n => n.from != from || n.to != to);
   }
 
   calculate() {
