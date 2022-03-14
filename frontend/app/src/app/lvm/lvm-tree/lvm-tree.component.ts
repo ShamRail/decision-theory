@@ -24,7 +24,6 @@ export class LvmTreeComponent implements OnInit {
   public selectedEdge?: Edge;
 
   public allEdges: LvmTreeEdge[] = [];
-  public lvmEdges: LvmTreeEdge[] = [];
   public lvmNodes: LvmTreeNode[] = [];
   public selectedLvmNode?: LvmTreeNode;
   public selectedLvmEdge?: LvmTreeEdge;
@@ -76,11 +75,6 @@ export class LvmTreeComponent implements OnInit {
             const operatorParent = this.allEdges.find((n) => n.to == logicOperator.id);
             if (targetNode.isLogicOperator() && operatorParent) {
               return;
-            }
-            if (operatorParent) {
-              this.lvmEdges.push(
-                new LvmTreeEdge(edgeData.id, operatorParent.from, eventNode.id, logicOperator.type, eventNode.probability)
-              );
             }
             this.allEdges.push(new LvmTreeEdge(edgeData.id, sourceNode.id, targetNode.id, logicOperator.type, targetNode.probability));
             callback(edgeData);
@@ -198,7 +192,6 @@ export class LvmTreeComponent implements OnInit {
         this.nodes.clear();
         this.edges.clear();
         this.lvmNodes = [];
-        this.lvmEdges = [];
         this.allEdges = [];
         this.edgePerId.clear();
 
@@ -221,7 +214,6 @@ export class LvmTreeComponent implements OnInit {
         })
         this.visNetworkService.redraw(this.visNetwork);
         this.allEdges = result.allEdges;
-        this.lvmEdges = result.lvmEdges;
 
       })
     }
@@ -229,17 +221,24 @@ export class LvmTreeComponent implements OnInit {
 
   saveFile() {
     this.visNetworkService.storePositions(this.visNetwork);
-    this.lvmService.saveTreeToFile(this.lvmNodes, this.nodes, this.allEdges, this.lvmEdges);
+    this.lvmService.saveTreeToFile(this.lvmNodes, this.nodes, this.allEdges);
   }
 
   updateSelected() {
     if (this.selectedLvmNode && this.selectedNode) {
 
       console.log("Update node: ", this.selectedLvmNode);
-      this.selectedLvmNode.name = this.selectedLvmNode.isLogicOperator() ? this.operatorOption: this.eventName;
       this.selectedLvmNode.description = this.eventDescription;
       this.selectedLvmNode.probability = this.eventProbability;
-      this.selectedLvmNode.type = this.selectedLvmNode.isLogicOperator() ? this.operatorOption : this.selectedLvmNode.type;
+      if (this.selectedLvmNode.isLogicOperator()) {
+        this.selectedLvmNode.name = this.operatorOption;
+        this.selectedLvmNode.type = this.operatorOption;
+        const nodeId = this.selectedLvmNode.id;
+        this.allEdges.filter(e => e.from == nodeId).forEach(e => e.type = this.operatorOption);
+      } else {
+        this.selectedLvmNode.name = this.eventName;
+      }
+      console.log("Update result: ", this.selectedLvmNode);
 
       const isInit = this.selectedLvmNode.probability != -1;
       let text = `${this.selectedLvmNode.name}\n${this.selectedLvmNode.description}`;
@@ -293,12 +292,11 @@ export class LvmTreeComponent implements OnInit {
     const ids = [from, to];
     // @ts-ignore
     this.edges.remove(id);
-    this.lvmEdges = this.lvmEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
     this.allEdges = this.allEdges.filter(n => !ids.includes(n.from) && !ids.includes(n.to));
   }
 
   calculate() {
-    this.lvmService.calculateTree(this.lvmEdges, this.lvmNodes).subscribe((result) => {
+    this.lvmService.calculateTree(this.allEdges, this.lvmNodes).subscribe((result) => {
       console.log(result);
     });
   }

@@ -58,8 +58,7 @@ export class DetailedLvmTreeNode extends LvmTreeNode {
 
 class FileDTO {
   constructor(public nodes: DetailedLvmTreeNode[],
-              public allEdges: LvmTreeEdge[],
-              public lvmEdges: LvmTreeEdge[]) {
+              public allEdges: LvmTreeEdge[]) {
   }
 }
 
@@ -82,7 +81,7 @@ export class LvmService {
   constructor(private fileService: FileService,
               private httpClient: HttpClient) { }
 
-  saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[], lvmEdges: LvmTreeEdge[]) {
+  saveTreeToFile(lvmNodes: LvmTreeNode[], nodes: DataSet<Node>, allEdges: LvmTreeEdge[]) {
     let nodesToSave = lvmNodes.map(lvmNode => {
       let node = nodes.get().find((item) => item.id == lvmNode.id)
       if (!node) {
@@ -90,7 +89,7 @@ export class LvmService {
       }
       return new DetailedLvmTreeNode(lvmNode, node.x, node.y, node.color);
     });
-    this.fileService.saveToFile(new FileDTO(nodesToSave, allEdges, lvmEdges))
+    this.fileService.saveToFile(new FileDTO(nodesToSave, allEdges))
   }
 
   restoreFromFile(file: File): Observable<FileDTO> {
@@ -106,14 +105,33 @@ export class LvmService {
         probabilityPerNode[n.name] = n.probability;
       }
     });
-    const transformedEdges = edges.map(e => {
+    const transformedEdges = this.formAdjancentList(nodes, edges).map(e => {
       // @ts-ignore
       return new LvmTreeEdge(e.id, namePerId.get(e.from), namePerId.get(e.to), e.type, e.probability);
     })
+    console.log("Calculate tree with ", transformedEdges, " ", probabilityPerNode);
     return this.httpClient.post<LvmNodeResult[]>(`${this.api}/calculate-tree`, {
       edges: transformedEdges,
       nodeProbabilities: probabilityPerNode
     })
+  }
+
+  formAdjancentList(nodes: LvmTreeNode[], edges: LvmTreeEdge[]): LvmTreeEdge[] {
+    const result: LvmTreeEdge[] = [];
+    for (let node of nodes) {
+      if (node.isLogicOperator()) {
+        const childrenEdges = edges.filter(e => e.from == node.id)
+        const parentEdge = edges.find(e => e.to == node.id);
+        if (parentEdge) {
+          for (let edge of childrenEdges) {
+            result.push(new LvmTreeEdge(
+              edge.id, parentEdge.from, edge.to, edge.type, edge.probability
+            ));
+          }
+        }
+      }
+    }
+    return result;
   }
 
 }

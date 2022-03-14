@@ -14,6 +14,7 @@ export class FileService {
     link.href = URL.createObjectURL(blob);
     link.download = 'export.json';
     link.click();
+    URL.revokeObjectURL(link.href);
   }
 
   restoreObject<T>(file: File): Observable<T> {
