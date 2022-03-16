@@ -1,4 +1,4 @@
-package decision.theory.lab1.interfaces.service;
+package decision.theory.util;
 
 public interface IRandomService {
 

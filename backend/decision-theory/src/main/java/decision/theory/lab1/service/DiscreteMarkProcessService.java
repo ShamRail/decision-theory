@@ -3,7 +3,7 @@ package decision.theory.lab1.service;
 import decision.theory.lab1.interfaces.model.IMarkProcessResult;
 import decision.theory.lab1.interfaces.model.IMarkProcessSourceData;
 import decision.theory.lab1.interfaces.service.IMarkProcessService;
-import decision.theory.lab1.interfaces.service.IRandomService;
+import decision.theory.util.IRandomService;
 import decision.theory.lab1.model.MarkProcessResult;
 import decision.theory.lab1.model.MarkProcessSourceData;
 import org.springframework.stereotype.Service;

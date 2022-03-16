@@ -1,6 +1,5 @@
-package decision.theory.lab1.service;
+package decision.theory.util;
 
-import decision.theory.lab1.interfaces.service.IRandomService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,0 +1,566 @@
+{
+	"nodes": [
+		{
+			"id": "n1",
+			"name": "x0",
+			"description": "Опасное состояние ИС \nдля её дальнейшей \nэксплуатации \nP = 0.280",
+			"probability": -1,
+			"type": "NONE",
+			"x": -59,
+			"y": -341,
+			"color": "green"
+		},
+		{
+			"id": "n2",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": -57,
+			"y": -275
+		},
+		{
+			"id": "n3",
+			"name": "x27",
+			"description": "Некорректная работа ИС\nP = 0.275",
+			"probability": -1,
+			"type": "NONE",
+			"x": -311,
+			"y": -217,
+			"color": "green"
+		},
+		{
+			"id": "n4",
+			"name": "x3",
+			"description": "Сбой работы ИС\nP = 0.008",
+			"probability": -1,
+			"type": "NONE",
+			"x": 543,
+			"y": -225,
+			"color": "green"
+		},
+		{
+			"id": "n5",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": -319,
+			"y": -152
+		},
+		{
+			"id": "n6",
+			"name": "x29",
+			"description": "Неправильная \nпостановка задачи\nP = 0.069",
+			"probability": -1,
+			"type": "NONE",
+			"x": -114,
+			"y": -78,
+			"color": "green"
+		},
+		{
+			"id": "n7",
+			"name": "x2",
+			"description": "Ошибка, появившаяся \nво время эксплуатации \nP = 0.213",
+			"probability": -1,
+			"type": "NONE",
+			"x": -890,
+			"y": -67,
+			"color": "green"
+		},
+		{
+			"id": "n8",
+			"name": "x33",
+			"description": "Нарушение \nкорректности данных\nP = 0.010",
+			"probability": -1,
+			"type": "NONE",
+			"x": -347,
+			"y": -75,
+			"color": "green"
+		},
+		{
+			"id": "n9",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": -103,
+			"y": -6
+		},
+		{
+			"id": "n10",
+			"name": "x31",
+			"description": "Плохо \nсформулированное \nТЗ со стороны \nзаказчика",
+			"probability": 0.05,
+			"type": "NONE",
+			"x": 43,
+			"y": 168,
+			"color": "red"
+		},
+		{
+			"id": "n11",
+			"name": "x32",
+			"description": "Задание \nнеправильно \nинтерпретировано \nаналитиком ",
+			"probability": 0.02,
+			"type": "NONE",
+			"x": -138,
+			"y": 172,
+			"color": "red"
+		},
+		{
+			"id": "n12",
+			"name": "AND",
+			"description": "",
+			"probability": -1,
+			"type": "AND",
+			"x": -352,
+			"y": 1
+		},
+		{
+			"id": "n13",
+			"name": "x35",
+			"description": "Ввод некорректных \nданных",
+			"probability": 0.4,
+			"type": "NONE",
+			"x": -296,
+			"y": 75,
+			"color": "red"
+		},
+		{
+			"id": "n14",
+			"name": "x36",
+			"description": "Отсутствие защиты \nот ошибок ввода",
+			"probability": 0.025,
+			"type": "NONE",
+			"x": -479,
+			"y": 73,
+			"color": "red"
+		},
+		{
+			"id": "n15",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": -900,
+			"y": 6
+		},
+		{
+			"id": "n16",
+			"name": "x12",
+			"description": "Ошибка, возникшая \nна корректной ЭВМ\nP = 0.170",
+			"probability": -1,
+			"type": "NONE",
+			"x": -1063,
+			"y": 78,
+			"color": "green"
+		},
+		{
+			"id": "n17",
+			"name": "x5",
+			"description": "Ошибка, выявленная \nклиентом\nP = 0.052",
+			"probability": -1,
+			"type": "NONE",
+			"x": -726,
+			"y": 82,
+			"color": "green"
+		},
+		{
+			"id": "n18",
+			"name": "AND",
+			"description": "",
+			"probability": -1,
+			"type": "AND",
+			"x": -717,
+			"y": 166
+		},
+		{
+			"id": "n19",
+			"name": "x11",
+			"description": "Пропуск ошибки \nотделом тестирования",
+			"probability": 0.11111,
+			"type": "NONE",
+			"x": -794,
+			"y": 245,
+			"color": "red"
+		},
+		{
+			"id": "n20",
+			"name": "x7",
+			"description": "Ошибка в ИС, возникшая \nв ходе разработки\nP = 0.428",
+			"probability": -1,
+			"type": "NONE",
+			"x": -553,
+			"y": 241,
+			"color": "green"
+		},
+		{
+			"id": "n21",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": -562,
+			"y": 332
+		},
+		{
+			"id": "n22",
+			"name": "x9",
+			"description": "Ошибка, допущенная \nfront-end разработчиком",
+			"probability": 0.12,
+			"type": "NONE",
+			"x": -427,
+			"y": 441,
+			"color": "red"
+		},
+		{
+			"id": "n23",
+			"name": "x10",
+			"description": "Ошибка, допущенная\nback-end разработчиком ",
+			"probability": 0.35,
+			"type": "NONE",
+			"x": -642,
+			"y": 440,
+			"color": "red"
+		},
+		{
+			"id": "n24",
+			"name": "AND",
+			"description": "",
+			"probability": -1,
+			"type": "AND",
+			"x": -1081,
+			"y": 161
+		},
+		{
+			"id": "n25",
+			"name": "x14",
+			"description": "Модуль ИС \nреализован с \nиспользованием \nнового стандарта",
+			"probability": 0.2,
+			"type": "NONE",
+			"x": -976,
+			"y": 325,
+			"color": "red"
+		},
+		{
+			"id": "n26",
+			"name": "x15",
+			"description": "ЭВМ клиента \nподдерживает \nтолько старые \nстандарты",
+			"probability": 0.85,
+			"type": "NONE",
+			"x": -1160,
+			"y": 321,
+			"color": "red"
+		},
+		{
+			"id": "n27",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": 572,
+			"y": -140
+		},
+		{
+			"id": "n28",
+			"name": "x17",
+			"description": "Потеря соединения \nс базой данных",
+			"probability": 0.005,
+			"type": "NONE",
+			"x": 1058,
+			"y": 35,
+			"color": "red"
+		},
+		{
+			"id": "n29",
+			"name": "x18",
+			"description": "Невозможность работы \nиз-за аппаратной \nсоставляющей ",
+			"probability": 0.0027,
+			"type": "NONE",
+			"x": 747,
+			"y": 36,
+			"color": "red"
+		},
+		{
+			"id": "n30",
+			"name": "x19",
+			"description": "Сбой запуска ИС, \nпосле обновления\nP = 0.000",
+			"probability": -1,
+			"type": "NONE",
+			"x": 485,
+			"y": 39,
+			"color": "green"
+		},
+		{
+			"id": "n31",
+			"name": "AND",
+			"description": "",
+			"probability": -1,
+			"type": "AND",
+			"x": 481,
+			"y": 157
+		},
+		{
+			"id": "n32",
+			"name": "x22",
+			"description": "Отсутствие \nрезервной \nкопии предыдущей \nверсии",
+			"probability": 0.01,
+			"type": "NONE",
+			"x": 384,
+			"y": 458,
+			"color": "red"
+		},
+		{
+			"id": "n33",
+			"name": "x21",
+			"description": "Ошибки \nв процессе \nобновления\nP = 0.011",
+			"probability": -1,
+			"type": "NONE",
+			"x": 787,
+			"y": 316,
+			"color": "green"
+		},
+		{
+			"id": "n34",
+			"name": "OR",
+			"description": "",
+			"probability": -1,
+			"type": "OR",
+			"x": 792,
+			"y": 410
+		},
+		{
+			"id": "n35",
+			"name": "x24",
+			"description": "Неопытность \nсистемного \nадминистратора ",
+			"probability": 0.0025,
+			"type": "NONE",
+			"x": 886,
+			"y": 513,
+			"color": "red"
+		},
+		{
+			"id": "n36",
+			"name": "x25",
+			"description": "Неправильно \nсобранный пакет \nобновления",
+			"probability": 0.009,
+			"type": "NONE",
+			"x": 697,
+			"y": 516,
+			"color": "red"
+		}
+	],
+	"allEdges": [
+		{
+			"from": "n1",
+			"to": "n2",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n2",
+			"to": "n3",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n2",
+			"to": "n4",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n3",
+			"to": "n5",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n5",
+			"to": "n6",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n5",
+			"to": "n7",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n5",
+			"to": "n8",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n6",
+			"to": "n9",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n9",
+			"to": "n10",
+			"type": "OR",
+			"probability": 0.05
+		},
+		{
+			"from": "n9",
+			"to": "n11",
+			"type": "OR",
+			"probability": 0.02
+		},
+		{
+			"from": "n8",
+			"to": "n12",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n12",
+			"to": "n13",
+			"type": "AND",
+			"probability": 0.4
+		},
+		{
+			"from": "n12",
+			"to": "n14",
+			"type": "AND",
+			"probability": 0.025
+		},
+		{
+			"from": "n7",
+			"to": "n15",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n15",
+			"to": "n16",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n15",
+			"to": "n17",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n17",
+			"to": "n18",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n18",
+			"to": "n19",
+			"type": "AND",
+			"probability": 0.11111
+		},
+		{
+			"from": "n18",
+			"to": "n20",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n20",
+			"to": "n21",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n21",
+			"to": "n22",
+			"type": "OR",
+			"probability": 0.12
+		},
+		{
+			"from": "n21",
+			"to": "n23",
+			"type": "OR",
+			"probability": 0.35
+		},
+		{
+			"from": "n16",
+			"to": "n24",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n24",
+			"to": "n25",
+			"type": "AND",
+			"probability": 0.2
+		},
+		{
+			"from": "n24",
+			"to": "n26",
+			"type": "AND",
+			"probability": 0.85
+		},
+		{
+			"from": "n4",
+			"to": "n27",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n27",
+			"to": "n28",
+			"type": "OR",
+			"probability": 0.005
+		},
+		{
+			"from": "n27",
+			"to": "n29",
+			"type": "OR",
+			"probability": 0.0027
+		},
+		{
+			"from": "n27",
+			"to": "n30",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n30",
+			"to": "n31",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n31",
+			"to": "n32",
+			"type": "AND",
+			"probability": 0.01
+		},
+		{
+			"from": "n31",
+			"to": "n33",
+			"type": "AND",
+			"probability": -1
+		},
+		{
+			"from": "n33",
+			"to": "n34",
+			"type": "OR",
+			"probability": -1
+		},
+		{
+			"from": "n34",
+			"to": "n35",
+			"type": "OR",
+			"probability": 0.0025
+		},
+		{
+			"from": "n34",
+			"to": "n36",
+			"type": "OR",
+			"probability": 0.009
+		}
+	],
+	"loss": "40000"
+}
