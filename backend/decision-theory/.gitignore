@@ -36,3 +36,6 @@ nbactions.xml
 .mvn
 mvnw
 mvnw.cmd
+/bin/
+
+.checkstyle
