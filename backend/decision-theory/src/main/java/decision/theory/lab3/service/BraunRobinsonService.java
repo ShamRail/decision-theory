@@ -18,11 +18,24 @@ public class BraunRobinsonService implements IBraunRobinsonService {
 
     @Override
     public List<BraunRobinsonRow> calculate(double[][] matrix, int iterationAmount, IInitStrategy strategy) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            throw new IllegalArgumentException("Matrix is empty or it's vector");
-        }
         if (iterationAmount < 2) {
             throw new IllegalArgumentException("Iteration amount must be more than or equal to 1");
+        }
+        return calculate(matrix, strategy, false, iterationAmount);
+    }
+
+
+	@Override
+	public List<BraunRobinsonRow> calculate(double[][] matrix, double precision, IInitStrategy strategy) {
+        if (precision < 0) {
+        	throw new IllegalArgumentException("Precision must be positive");
+        }
+        return calculate(matrix, strategy, true, precision);
+	}
+    
+	private List<BraunRobinsonRow> calculate(double[][] matrix, IInitStrategy strategy, boolean stopByPrecision, double precisionOrIterations) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            throw new IllegalArgumentException("Matrix is empty or it's vector");
         }
         var result = new ArrayList<BraunRobinsonRow>();
         var rowCount = matrix.length;
@@ -52,7 +65,10 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         System.out.println();
         System.out.printf("i1 = %d, j1 = %d %n%n", min.index + 1, max.index + 1);
 
-        for (int k = 2; k <= iterationAmount; k++) {
+        var deltaCol = Double.MAX_VALUE;
+        var deltaRow = Double.MIN_VALUE;
+        for (int k = 2; (!stopByPrecision && k <= precisionOrIterations) 
+        		|| (stopByPrecision && (deltaCol > precisionOrIterations || deltaRow > precisionOrIterations)); k++) {
             System.out.printf("k = %d%n%n", k);
             var colResult = new ArrayList<Double>(previousRow.getColResult());
             var rowResult = new ArrayList<Double>(previousRow.getRowResult());
@@ -78,6 +94,8 @@ public class BraunRobinsonService implements IBraunRobinsonService {
 
             min = findExtremum(colResult, (el1, el2) -> el1 < el2);
             max = findExtremum(rowResult, (el1, el2) -> el1 > el2);
+            deltaCol = Math.abs(previousRow.getMin() - min.value / k);
+            deltaRow = Math.abs(previousRow.getMax() - max.value / k);
             previousRow = new BraunRobinsonRow(
                     k, colResult, rowResult,
                     min.index + 1, min.value / k,
@@ -99,10 +117,10 @@ public class BraunRobinsonService implements IBraunRobinsonService {
 
             result.add(previousRow);
         }
+        
         return result;
-    }
-
-
+	}
+	
     private Extremum findExtremum(List<Double> elements, BiPredicate<Double, Double> condition) {
         var extremum = new Extremum(elements.get(0), 0);
         for (var i = 1; i < elements.size(); i++) {

@@ -69,6 +69,24 @@ public class BraunRobinsonServiceTest {
 
         assertEquals(expResult, result);
     }
+    
+    @Test
+    public void testCalculateWithPrecision() {
+        var matrix = new double[][]{
+            {10, 12, 2, 23},
+            {9, 56, 65, 29},
+            {14, 3, 37, 43},
+            {78, 4, 17, 28}
+        };
+
+        var epsilon = 0.0001;
+        var service = new BraunRobinsonService();
+        var result = service.calculate(matrix, epsilon, getInitStrategy(0, 0));
+        var lastLine = result.get(result.size() - 1);
+        
+        assertEquals(22.91, lastLine.getMin(), 0.1);
+        assertEquals(23.01, lastLine.getMax(), 0.1);
+    }
 
     @Disabled
     @Test

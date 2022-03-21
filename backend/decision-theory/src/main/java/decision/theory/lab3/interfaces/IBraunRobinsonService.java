@@ -8,4 +8,6 @@ public interface IBraunRobinsonService {
     
     List<BraunRobinsonRow> calculate(double[][] matrix, int iterationAmount, IInitStrategy strategy);
     
+    List<BraunRobinsonRow> calculate(double[][] matrix, double precision, IInitStrategy strategy);
+    
 }
