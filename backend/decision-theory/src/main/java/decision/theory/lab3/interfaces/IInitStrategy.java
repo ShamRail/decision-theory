@@ -8,12 +8,18 @@ public interface IInitStrategy {
 
         private int rowIndex;
         
+        private double maxMin;
+        
         private int colIndex;
+        
+        private double minMax;
 
-        public Result(int rowIndex, int colIndex) {
+        public Result(int rowIndex, double maxMin, int colIndex, double minMax) {
             super();
             this.rowIndex = rowIndex;
             this.colIndex = colIndex;
+            this.minMax = minMax;
+            this.maxMin = maxMin;
         }
 
         public int getRowIndex() {
@@ -30,8 +36,24 @@ public interface IInitStrategy {
 
         public void setColIndex(int colIndex) {
             this.colIndex = colIndex;
-        }        
+        }
 
+        public double getMaxMin() {
+            return maxMin;
+        }
+
+        public void setMaxMin(double maxMin) {
+            this.maxMin = maxMin;
+        }
+
+        public double getMinMax() {
+            return minMax;
+        }
+
+        public void setMinMax(double minMax) {
+            this.minMax = minMax;
+        }        
+        
     }
 
 }

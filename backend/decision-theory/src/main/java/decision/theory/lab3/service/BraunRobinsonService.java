@@ -25,15 +25,15 @@ public class BraunRobinsonService implements IBraunRobinsonService {
     }
 
 
-	@Override
-	public List<BraunRobinsonRow> calculate(double[][] matrix, double precision, IInitStrategy strategy) {
+    @Override
+    public List<BraunRobinsonRow> calculate(double[][] matrix, double precision, IInitStrategy strategy) {
         if (precision < 0) {
-        	throw new IllegalArgumentException("Precision must be positive");
+            throw new IllegalArgumentException("Precision must be positive");
         }
         return calculate(matrix, strategy, true, precision);
-	}
+    }
     
-	private List<BraunRobinsonRow> calculate(double[][] matrix, IInitStrategy strategy, boolean stopByPrecision, double precisionOrIterations) {
+    private List<BraunRobinsonRow> calculate(double[][] matrix, IInitStrategy strategy, boolean stopByPrecision, double precisionOrIterations) {
         if (matrix.length == 0 || matrix[0].length == 0) {
             throw new IllegalArgumentException("Matrix is empty or it's vector");
         }
@@ -68,7 +68,7 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         var deltaCol = Double.MAX_VALUE;
         var deltaRow = Double.MIN_VALUE;
         for (int k = 2; (!stopByPrecision && k <= precisionOrIterations) 
-        		|| (stopByPrecision && (deltaCol > precisionOrIterations || deltaRow > precisionOrIterations)); k++) {
+                || (stopByPrecision && (deltaCol > precisionOrIterations || deltaRow > precisionOrIterations)); k++) {
             System.out.printf("k = %d%n%n", k);
             var colResult = new ArrayList<Double>(previousRow.getColResult());
             var rowResult = new ArrayList<Double>(previousRow.getRowResult());
@@ -119,8 +119,8 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         }
         
         return result;
-	}
-	
+    }
+    
     private Extremum findExtremum(List<Double> elements, BiPredicate<Double, Double> condition) {
         var extremum = new Extremum(elements.get(0), 0);
         for (var i = 1; i < elements.size(); i++) {

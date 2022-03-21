@@ -110,7 +110,7 @@ public class BraunRobinsonServiceTest {
         return new IInitStrategy() {
             @Override
             public Result choose(double[][] matrix) {
-                return new Result(rowIndex, colIndex);
+                return new Result(rowIndex, 0, colIndex, 0);
             }
             
         };
