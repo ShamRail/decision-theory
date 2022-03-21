@@ -3,7 +3,6 @@ package decision.theory.lab3.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -11,21 +10,14 @@ import java.util.stream.IntStream;
 import org.springframework.stereotype.Service;
 
 import decision.theory.lab3.interfaces.IBraunRobinsonService;
+import decision.theory.lab3.interfaces.IInitStrategy;
 import decision.theory.lab3.model.BraunRobinsonRow;
-import decision.theory.util.IRandomService;
 
 @Service
 public class BraunRobinsonService implements IBraunRobinsonService {
 
-    private final IRandomService randomService;
-
-    public BraunRobinsonService(IRandomService randomService) {
-        this.randomService = randomService;
-    }
-
     @Override
-    public List<BraunRobinsonRow> calculate(double[][] matrix, int iterationAmount) {
-        Locale.setDefault(Locale.ENGLISH);
+    public List<BraunRobinsonRow> calculate(double[][] matrix, int iterationAmount, IInitStrategy strategy) {
         if (matrix.length == 0 || matrix[0].length == 0) {
             throw new IllegalArgumentException("Matrix is empty or it's vector");
         }
@@ -35,8 +27,9 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         var result = new ArrayList<BraunRobinsonRow>();
         var rowCount = matrix.length;
         var colCount = matrix[0].length;
-        var firstRow = (int) (randomService.generate(0, rowCount));
-        var firstCol = (int) (randomService.generate(0, colCount));
+        var initResult = strategy.choose(matrix);
+        var firstRow = initResult.getRowIndex();
+        var firstCol = initResult.getColIndex();
         var row = copyRow(matrix[firstRow]);
         var col = copyCol(matrix, firstCol);
         var min = findExtremum(col, (el1, el2) -> el1 < el2);
@@ -108,6 +101,7 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         }
         return result;
     }
+
 
     private Extremum findExtremum(List<Double> elements, BiPredicate<Double, Double> condition) {
         var extremum = new Extremum(elements.get(0), 0);

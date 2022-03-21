@@ -1,5 +1,9 @@
 package decision.theory;
 
+import java.util.Locale;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,4 +15,9 @@ public class DecisionTheoryApplication {
         SpringApplication.run(DecisionTheoryApplication.class, args);
     }
 
+    @PostConstruct
+    public void setDefaultLocale() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
+    
 }
