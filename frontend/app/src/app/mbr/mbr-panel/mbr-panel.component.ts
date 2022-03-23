@@ -82,4 +82,17 @@ export class MbrPanelComponent implements OnInit {
   updateCell(i: number, j: number, $event: any) {
     this.matrix[i][j] = $event.target.value;
   }
+
+  calculate() {
+    this.mbrService.invokeCalculation(this.withPrecision, {
+        matrix: this.matrix,
+        firstCol: this.colStart,
+        firstRow: this.rowStart,
+        iterationsAmount: this.stepsCount,
+        precision: this.precision
+      }
+    ).subscribe(result => {
+      console.log(result);
+    })
+  }
 }
