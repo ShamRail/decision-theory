@@ -12,35 +12,35 @@ public class MaxMinInitStrategy implements IInitStrategy {
     }
     
     private double[] findMaxMin(double[][] matrix) {
-        var result = new double[] {-1, Double.MAX_VALUE};
+        var result = new double[] {-1, Double.MIN_VALUE};
         for (var row = 0; row < matrix.length; row++) {
-            var max = Double.MIN_VALUE;
+            var min = Double.MAX_VALUE;
             for (var col = 0; col < matrix[row].length; col++) {
-                if (matrix[row][col] > max) {
-                    max = matrix[row][col];
+                if (matrix[row][col] < min) {
+                    min = matrix[row][col];
                 }
             }
-            if (max < result[1]) {
+            if (min > result[1]) {
                 result[0] = row;
-                result[1] = max;
+                result[1] = min;
             }
         }
         return result;
     }
     
     private double[] findMinMax(double[][] matrix) {
-        var result = new double[2];
+        var result = new double[] {-1, Double.MAX_VALUE};
         var colCount = matrix[0].length;
         for (var col = 0; col < colCount; col++) {
-            var min = Double.MAX_VALUE;
+            var max = Double.MIN_VALUE;
             for (var row = 0; row < matrix.length; row++) {
-                if (matrix[row][col] < min) {
-                    min = matrix[row][col];
+                if (matrix[row][col] > max) {
+                    max = matrix[row][col];
                 }
             }
-            if (min > result[1]) {
+            if (max < result[1]) {
                 result[0] = col;
-                result[1] = min;
+                result[1] = max;
             }
         }
         return result;

@@ -16,24 +16,24 @@ public class MaxMinInitStrategyTests {
             {78, 4, 17, 28}
         };
         var result = new MaxMinInitStrategy().choose(matrix);
-        assertEquals(0, result.getRowIndex());
+        assertEquals(1, result.getRowIndex());
         assertEquals(3, result.getColIndex());
-        assertEquals(23, result.getMaxMin());
-        assertEquals(23, result.getMinMax());
+        assertEquals(9, result.getMaxMin());
+        assertEquals(43, result.getMinMax());
     }
     
     @Test
     public void whenMinMaxAndMaxMinNotEqual() {
         var matrix = new double[][]{
-            {3, 7, 9},
-            {6, 1, 0},
-            {2, 5, 10}
+            {5, 5},
+            {1, 3},
+            {4, 2}
         };
         var result = new MaxMinInitStrategy().choose(matrix);
-        assertEquals(1, result.getRowIndex());
+        assertEquals(0, result.getRowIndex());
         assertEquals(0, result.getColIndex());
-        assertEquals(6, result.getMaxMin());
-        assertEquals(2, result.getMinMax());
+        assertEquals(5, result.getMaxMin());
+        assertEquals(5, result.getMinMax());
     }
     
 }

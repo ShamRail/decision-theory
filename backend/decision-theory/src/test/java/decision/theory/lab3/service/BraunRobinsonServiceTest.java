@@ -27,7 +27,7 @@ public class BraunRobinsonServiceTest {
                 new BraunRobinsonRow(2, List.of(12.0, 8.0, 10.0), List.of(10.0, 5.0, 12.0), 2, 4, 3, 6),
                 new BraunRobinsonRow(3, List.of(17.0, 15.0, 16.0), List.of(14.0, 8.0, 19.0), 2, 5, 3, 19.0 / 3.0)
         );
-        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0));
+        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0)).getSteps();
         assertEquals(expResult, result);
     }
 
@@ -44,7 +44,7 @@ public class BraunRobinsonServiceTest {
                 new BraunRobinsonRow(1, List.of(7.0, 1.0, 5.0), List.of(3.0, 7.0, 9.0), 2, 1, 3, 9),
                 new BraunRobinsonRow(2, List.of(16.0, 1.0, 15.0), List.of(9.0, 8.0, 9.0), 2, 0.5, 1, 4.5)
         );
-        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 1));
+        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 1)).getSteps();
         assertEquals(expResult, result);
     }
 
@@ -59,7 +59,7 @@ public class BraunRobinsonServiceTest {
         var iterationAmount = 3;
         var service = new BraunRobinsonService();
         
-        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0));
+        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0)).getSteps();
 
         var expResult = List.of(
                 new BraunRobinsonRow(1, List.of(10.0, 9.0, 14.0, 78.0), List.of(10.0, 12.0, 2.0, 23.0), 2, 9.0, 4, 23),
@@ -81,7 +81,7 @@ public class BraunRobinsonServiceTest {
 
         var epsilon = 0.0001;
         var service = new BraunRobinsonService();
-        var result = service.calculate(matrix, epsilon, getInitStrategy(0, 0));
+        var result = service.calculate(matrix, epsilon, getInitStrategy(0, 0)).getSteps();
         var lastLine = result.get(result.size() - 1);
         
         assertEquals(22.91, lastLine.getMin(), 0.1);
@@ -102,7 +102,7 @@ public class BraunRobinsonServiceTest {
                 new BraunRobinsonRow(1, List.of(7.0, 1.0, 5.0), List.of(3.0, 7.0, 9.0), 2, 1, 3, 9),
                 new BraunRobinsonRow(2, List.of(16.0, 1.0, 15.0), List.of(9.0, 8.0, 9.0), 2, 0.5, 1, 4.5)
         );
-        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(1, 2));
+        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(1, 2)).getSteps();
         assertEquals(expResult, result);
     }
 
