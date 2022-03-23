@@ -3,20 +3,26 @@
     <div class="row">
       <div class="col-4">
         <label for="colCount">Кол-во стр-й 1-го игрока</label>
-        <input class="form-control" id="colCount" type="number" min="1" max="10" value="2" (change)="updateCols($event)">
+        <input class="form-control" id="colCount" type="number" min="1" max="10"
+               [value]="colCount"
+               (change)="updateCols($event)">
       </div>
       <div class="col-4">
         <label for="rowCount">Кол-во стр-й 2-го игрока</label>
-        <input class="form-control" id="rowCount" type="number" min="1" max="10" value="2" (change)="updateRows($event)">
+        <input class="form-control" id="rowCount" type="number" min="1" max="10"
+               [value]="rowCount"
+               (change)="updateRows($event)">
       </div>
       <div class="col-4" *ngIf="!withPrecision else precisionInput">
         <label for="stepsCount">Число итераций:</label>
-        <input class="form-control" id="stepsCount" type="number" min="1" max="10000" value="10">
+        <input class="form-control" id="stepsCount" type="number" min="1" max="10000" value="10"
+               [(ngModel)]="stepsCount" name="stepsCount">
       </div>
       <ng-template #precisionInput>
         <div class="col-4">
           <label for="precision">Точность:</label>
-          <input class="form-control" id="precision" type="number" min="0.00001" max="10" value="0.001">
+          <input class="form-control" id="precision" type="number" min="0.00001" max="10" value="0.001"
+                 [(ngModel)]="precision" name="precision">
         </div>
       </ng-template>
     </div>
@@ -24,11 +30,13 @@
     <div class="row">
       <div class="col-4">
         <label for="colInput">Нач. стратегия 1-го игрока</label>
-        <input class="form-control" id="colInput" type="number" min="1" max="10" value="2">
+        <input class="form-control" id="colInput" type="number" min="1" max="10" value="2"
+               [(ngModel)]="colStart" name="colStart">
       </div>
       <div class="col-4">
         <label for="rowInput">Нач. стратегия 2-го игрока</label>
-        <input class="form-control" id="rowInput" type="number" min="1" max="10" value="2">
+        <input class="form-control" id="rowInput" type="number" min="1" max="10" value="2"
+               [(ngModel)]="rowStart" name="rowStart">
       </div>
       <div class="col-2">
         <div class="form-check form-switch">
@@ -43,11 +51,11 @@
         <button class="btn bg-success w-100" type="button">Рассчитать</button>
       </div>
       <div class="col-4">
-        <input type="file" hidden #fileInput>
+        <input type="file" (change)="importFile($event)" hidden #fileInput>
         <button class="btn bg-info w-100" (click)="fileInput.click()">Импортировать</button>
       </div>
       <div class="col-4 p-0">
-        <button class="btn bg-secondary w-100" type="button">Экспортировать</button>
+        <button class="btn bg-secondary w-100" type="button" (click)="exportState()">Экспортировать</button>
       </div>
     </div>
   </form>
@@ -57,7 +65,7 @@
       <tbody>
         <tr *ngFor="let row of matrix; let i = index">
           <td *ngFor="let cell of row; let j = index">
-            <input class="form-control" type="number" [value]="cell">
+            <input class="form-control" type="number" [value]="cell" (change)="updateCell(i, j, $event)">
           </td>
         </tr>
       </tbody>

@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {MbrService} from "../mbr.service";
 
 @Component({
   selector: 'app-mbr-panel',
@@ -11,8 +12,14 @@ export class MbrPanelComponent implements OnInit {
   rowCount = 2;
   colCount = 2;
   matrix: number[][] = [[0, 0], [0, 0]];
+  stepsCount: number = 5;
+  precision: number = 0.001;
+  colStart: number = 1;
+  rowStart: number = 1;
 
-  constructor() {
+  constructor(
+    private mbrService: MbrService
+  ) {
   }
 
   ngOnInit(): void {
@@ -24,6 +31,7 @@ export class MbrPanelComponent implements OnInit {
 
   updateRows($event: any) {
     this.rowCount = $event.target.value;
+    console.log(this.rowCount);
     this.updateMatrix();
   }
 
@@ -44,4 +52,34 @@ export class MbrPanelComponent implements OnInit {
     this.matrix = newMatrix;
   }
 
+  importFile($event: any) {
+    const file = $event.target.files[0];
+    this.mbrService.import(file).subscribe(result => {
+      this.colCount = result.colCount;
+      this.rowCount = result.rowCount;
+      this.matrix = result.matrix;
+      this.stepsCount = result.stepAmount;
+      this.precision = result.precision;
+      this.withPrecision = result.withPrecision;
+      this.rowStart = result.firstRowStrategy;
+      this.colStart = result.firstColStrategy;
+    });
+  }
+
+  exportState() {
+    this.mbrService.export({
+      colCount: this.colCount,
+      rowCount: this.rowCount,
+      matrix: this.matrix,
+      stepAmount: this.stepsCount,
+      precision: this.precision,
+      withPrecision: this.withPrecision,
+      firstRowStrategy: this.rowStart,
+      firstColStrategy: this.colStart
+    });
+  }
+
+  updateCell(i: number, j: number, $event: any) {
+    this.matrix[i][j] = $event.target.value;
+  }
 }
