@@ -1,0 +1,35 @@
+{
+	"colCount": "4",
+	"rowCount": "4",
+	"matrix": [
+		[
+			"10",
+			"12",
+			"2",
+			"23"
+		],
+		[
+			"9",
+			"56",
+			"65",
+			"29"
+		],
+		[
+			"14",
+			"3",
+			"37",
+			"43"
+		],
+		[
+			"78",
+			"4",
+			"17",
+			"28"
+		]
+	],
+	"stepAmount": 35,
+	"precision": 0.001,
+	"withPrecision": false,
+	"firstRowStrategy": 1,
+	"firstColStrategy": 1
+}

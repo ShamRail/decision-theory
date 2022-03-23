@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {FileService} from "../shared/FileService";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 
@@ -45,8 +45,11 @@ export class MbrResultDto {
     public steps: MbrResultRow[],
     public totalIterations: number,
     public minMax: number,
+    public maxMinIndex: number,
+    public minMaxIndex: number,
     public maxMin: number,
     public gamePrice: number,
+    public log: string,
     public rowMixStrategies: number[] = [],
     public colMixStrategies: number[] = []
   ) {
@@ -60,6 +63,8 @@ export class MbrService {
 
   private apiHost = environment.apiUrl;
 
+  private onResultGot: Subject<MbrResultDto> = new Subject<MbrResultDto>();
+
   constructor(
     private fileService: FileService,
     private httpClient: HttpClient) { }
@@ -72,12 +77,18 @@ export class MbrService {
     return this.fileService.restoreObject<MbrState>(file);
   }
 
-  public invokeCalculation(withPrecision: boolean, dto: MbrDTO): Observable<MbrResultDto> {
-    return this.httpClient.post<MbrResultDto>(
+  public invokeCalculation(withPrecision: boolean, dto: MbrDTO): void {
+    this.httpClient.post<MbrResultDto>(
       `${this.apiHost}/mbr/solve`, dto, {
         params: new HttpParams().append("byPrecision", withPrecision)
       }
-    )
+    ).subscribe(result => {
+      this.onResultGot.next(result);
+    })
+  }
+
+  subscribeOnResult(callback: (dto: MbrResultDto) => void) {
+   this.onResultGot.subscribe(callback);
   }
 
 }

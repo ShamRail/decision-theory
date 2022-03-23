@@ -91,8 +91,6 @@ export class MbrPanelComponent implements OnInit {
         iterationsAmount: this.stepsCount,
         precision: this.precision
       }
-    ).subscribe(result => {
-      console.log(result);
-    })
+    );
   }
 }

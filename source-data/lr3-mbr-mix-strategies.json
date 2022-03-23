@@ -1,0 +1,23 @@
+{
+	"colCount": "2",
+	"rowCount": "3",
+	"matrix": [
+		[
+			"1",
+			"4"
+		],
+		[
+			"3",
+			"2"
+		],
+		[
+			"1",
+			"0"
+		]
+	],
+	"stepAmount": 5,
+	"precision": 0.01,
+	"withPrecision": true,
+	"firstRowStrategy": 1,
+	"firstColStrategy": 1
+}
