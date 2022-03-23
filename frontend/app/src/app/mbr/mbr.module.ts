@@ -6,6 +6,7 @@ import { MbrComponent } from './mbr/mbr.component';
 import { MbrPanelComponent } from './mbr-panel/mbr-panel.component';
 import { MbrResultComponent } from './mbr-result/mbr-result.component';
 import {FormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({

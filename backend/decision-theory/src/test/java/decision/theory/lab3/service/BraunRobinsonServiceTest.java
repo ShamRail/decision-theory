@@ -88,21 +88,21 @@ public class BraunRobinsonServiceTest {
         assertEquals(23.01, lastLine.getMax(), 0.1);
     }
 
-    @Disabled
     @Test
+    @Disabled
     public void testCalculate4() {
         var matrix = new double[][]{
-            {3, 7, 9},
-            {6, 1, 0},
-            {2, 5, 10}
+            {1, 4},
+            {3, 2},
+            {1, 0}
         };
-        var iterationAmount = 3;
+        var iterationAmount = 2;
         var service = new BraunRobinsonService(new ProbabilitySolver());
         var expResult = List.of(
                 new BraunRobinsonRow(1, List.of(7.0, 1.0, 5.0), List.of(3.0, 7.0, 9.0), 2, 1, 3, 9),
                 new BraunRobinsonRow(2, List.of(16.0, 1.0, 15.0), List.of(9.0, 8.0, 9.0), 2, 0.5, 1, 4.5)
         );
-        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(1, 2)).getSteps();
+        List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0)).getSteps();
         assertEquals(expResult, result);
     }
 

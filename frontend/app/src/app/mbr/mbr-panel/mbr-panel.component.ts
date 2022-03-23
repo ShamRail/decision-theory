@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MbrService} from "../mbr.service";
+import {MbrResultDto, MbrService} from "../mbr.service";
 
 @Component({
   selector: 'app-mbr-panel',
@@ -81,5 +81,16 @@ export class MbrPanelComponent implements OnInit {
 
   updateCell(i: number, j: number, $event: any) {
     this.matrix[i][j] = $event.target.value;
+  }
+
+  calculate() {
+    this.mbrService.invokeCalculation(this.withPrecision, {
+        matrix: this.matrix,
+        firstCol: this.colStart,
+        firstRow: this.rowStart,
+        iterationsAmount: this.stepsCount,
+        precision: this.precision
+      }
+    );
   }
 }

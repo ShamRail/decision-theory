@@ -6,9 +6,28 @@
           Ответ
         </button>
       </h2>
-      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div id="collapseOne" class="accordion-collapse collapse" [ngClass]="{ show: mbrResult }" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
         <div class="accordion-body">
-          <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          <div *ngIf="mbrResult; else noCalculated">
+            <div><b>Максимин: </b> {{ mbrResult.maxMin }}</div>
+            <div><b>Минимакс: </b> {{ mbrResult.minMax }}</div>
+
+            <div *ngIf="mbrResult.maxMin == mbrResult.minMax; else mixStrategies">
+              <div>Игра имеет седловую точку. Решение приведено в <strong>чистых</strong> стратегиях</div>
+              <div><b>Чистая стратегия 1-го игрока: </b> {{ mbrResult.maxMinIndex + 1 }}</div>
+              <div><b>Чистая стратегия 2-го игрока: </b> {{ mbrResult.minMaxIndex + 1 }}</div>
+              <div></div>
+            </div>
+
+            <ng-template #mixStrategies>
+              <div>Игра имеет НЕ имеет седловой точки. Решение приведено в <strong>смешанных</strong> стратегиях</div>
+              <div><b>Смешанная стратегия 1-го игрока: </b>({{ formatArray(mbrResult.colMixStrategies) }}) </div>
+              <div><b>Смешанная стратегия 2-го игрока: </b>({{ formatArray(mbrResult.rowMixStrategies) }}) </div>
+            </ng-template>
+
+            <div><b>Цена игры: </b> {{ mbrResult.gamePrice.toFixed(2) }}</div>
+            <div><b>Число итераций: </b> {{ mbrResult.totalIterations }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -20,7 +39,9 @@
       </h2>
       <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
         <div class="accordion-body">
-          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          <div *ngIf="mbrResult; else noCalculated" class="overflow-auto" style="height: 500px">
+            <pre>{{ mbrResult.log }}</pre>
+          </div>
         </div>
       </div>
     </div>
@@ -32,9 +53,42 @@
       </h2>
       <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
         <div class="accordion-body">
-          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          <div *ngIf="mbrResult; else noCalculated" class="overflow-auto" style="height: 500px">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th><i>k</i></th>
+                  <th><i>j<sub>k</sub></i></th>
+                  <th *ngFor="let col of mbrResult.steps[0].colResult; let j = index"><i>g<sup>k</sup><sub>{{j}}</sub></i></th>
+                  <th>M<sub>k</sub></th>
+                  <th>V<sub>k</sub></th>
+                  <th *ngFor="let col of mbrResult.steps[0].rowResult; let i = index"><i>h<sup>k</sup><sub>{{i}}</sub></i></th>
+                  <th><i>i<sub>k</sub></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of mbrResult.steps">
+                  <td>{{ row.iteration }}</td>
+                  <td>{{ row.maxIndex }}</td>
+                  <td *ngFor="let col of mbrResult.steps[0].colResult; let j = index">{{ col.toFixed(2) }}</td>
+                  <td>{{ row.max.toFixed(2) }}</td>
+                  <td>{{ row.min.toFixed(2) }}</td>
+                  <td *ngFor="let row of mbrResult.steps[0].rowResult; let i = index">{{ row.toFixed(2) }}</td>
+                  <td> {{ row.minIndex }} </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+<ng-template #noCalculated>
+  <p style="color: red;">
+    Нет результатов. Нажмите кнопку "Рассчитать".
+  </p>
+</ng-template>
+

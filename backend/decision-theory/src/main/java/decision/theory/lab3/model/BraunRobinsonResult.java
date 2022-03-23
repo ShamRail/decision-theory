@@ -13,15 +13,30 @@ public class BraunRobinsonResult {
 
     private double maxMin;
 
+    private int maxMinIndex;
+
+    private int minMaxIndex;
+
     private double gamePrice;
 
     private List<Double> rowMixStrategies = Collections.emptyList();
 
     private List<Double> colMixStrategies = Collections.emptyList();
 
-    public BraunRobinsonResult(List<BraunRobinsonRow> steps) {
+    private String log;
+
+    public BraunRobinsonResult(List<BraunRobinsonRow> steps, String log) {
         this.steps = steps;
         this.totalIterations = steps.size();
+        this.log = log;
+    }
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
     }
 
     public List<BraunRobinsonRow> getSteps() {
@@ -78,6 +93,22 @@ public class BraunRobinsonResult {
 
     public void setColMixStrategies(List<Double> colMixStrategies) {
         this.colMixStrategies = colMixStrategies;
+    }
+
+    public int getMaxMinIndex() {
+        return maxMinIndex;
+    }
+
+    public void setMaxMinIndex(int maxMinIndex) {
+        this.maxMinIndex = maxMinIndex;
+    }
+
+    public int getMinMaxIndex() {
+        return minMaxIndex;
+    }
+
+    public void setMinMaxIndex(int minMaxIndex) {
+        this.minMaxIndex = minMaxIndex;
     }
 
 }

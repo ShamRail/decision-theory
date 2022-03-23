@@ -1,5 +1,7 @@
 package decision.theory.lab3.service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +47,8 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         if (matrix.length == 0 || matrix[0].length == 0) {
             throw new IllegalArgumentException("Matrix is empty or it's vector");
         }
+        var log = new StringWriter();
+        var out = new PrintWriter(log);
         var result = new ArrayList<BraunRobinsonRow>();
         var rowCount = matrix.length;
         var colCount = matrix[0].length;
@@ -57,18 +61,48 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         var max = findExtremum(row, (el1, el2) -> el1 > el2);
         var previousRow = new BraunRobinsonRow(1, col, row, min.index + 1, min.value, max.index + 1, max.value);
         result.add(previousRow);
+        
+        out.printf("Пусть при k = 1 i1 = %d, j1 = %d %n%n", firstCol + 1, firstRow + 1);
+        IntStream.range(0, rowCount).forEach(i -> out.printf("g1%d = a%d%d = %.2f%n", i + 1, i + 1, firstCol + 1, col.get(i)));
+        out.println();
+        IntStream.range(0, colCount).forEach(j -> out.printf("h1%d = a%d%d = %.2f%n", j + 1, firstRow + 1, j + 1, row.get(j)));
+        out.println();
+        out.printf(
+                "M1 = min {%s} = %.2f%n", col.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), min.value
+        );
+        out.printf(
+                "V1 = max {%s} = %.2f%n", row.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), max.value
+        );
+        out.println();
+        out.printf("i1 = %d, j1 = %d %n%n", min.index + 1, max.index + 1);
+        
         var deltaCol = Double.MAX_VALUE;
         var deltaRow = Double.MIN_VALUE;
         for (int k = 2; (!stopByPrecision && k <= precisionOrIterations)
                 || (stopByPrecision && (deltaCol > precisionOrIterations || deltaRow > precisionOrIterations)); k++) {
+            out.printf("k = %d%n%n", k);
             var colResult = new ArrayList<Double>(previousRow.getColResult());
             var rowResult = new ArrayList<Double>(previousRow.getRowResult());
             for (int i = 0; i < rowCount; i++) {
+                out.printf(
+                        "g_%d_%d = g_%d_%d + a%d%d = %.2f + %.2f = %.2f%n",
+                        k, i + 1, k - 1, i + 1, i + 1, max.index + 1, colResult.get(i),
+                        matrix[i][max.index], colResult.get(i) + matrix[i][max.index]
+                );
                 colResult.set(i, colResult.get(i) + matrix[i][max.index]);
             }
+            out.println();
+            
             for (int j = 0; j < colCount; j++) {
+                out.printf(
+                        "h_%d_%d = h_%d_%d + a%d%d = %.2f + %.2f = %.2f%n",
+                        k, j + 1, k - 1, j + 1, min.index + 1, j + 1, rowResult.get(j),
+                        matrix[min.index][j], rowResult.get(j) + matrix[min.index][j]
+                );
                 rowResult.set(j, rowResult.get(j) + matrix[min.index][j]);
             }
+            out.println();
+            
             min = findExtremum(colResult, (el1, el2) -> el1 < el2);
             max = findExtremum(rowResult, (el1, el2) -> el1 > el2);
             deltaCol = Math.abs(previousRow.getMin() - min.value / k);
@@ -76,9 +110,23 @@ public class BraunRobinsonService implements IBraunRobinsonService {
             previousRow = new BraunRobinsonRow(
                     k, colResult, rowResult, min.index + 1, min.value / k, max.index + 1, max.value / k
             );
+            
+            out.printf(
+                    "M%d = min {%s} / %d = %.2f / %d = %.2f%n",
+                    k, colResult.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")),
+                    k, min.value, k, min.value / k
+            );
+            out.printf(
+                    "V%d = max {%s} / %d = %.2f / %d = %.2f%n",
+                    k, rowResult.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")),
+                    k, max.value, k, max.value / k
+            );
+            out.println();
+            out.printf("i%d = %d, j%d = %d %n%n", k, min.index + 1, k, max.index + 1);
+            
             result.add(previousRow);
         }
-        return setGameProperties(matrix, new BraunRobinsonResult(result));
+        return setGameProperties(matrix, new BraunRobinsonResult(result, log.getBuffer().toString()));
     }
 
     private Extremum findExtremum(List<Double> elements, BiPredicate<Double, Double> condition) {
@@ -98,6 +146,8 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         game.setMinMax(mmResult.getMinMax());
         if (mmResult.getMaxMin() == mmResult.getMinMax()) {
             game.setGamePrice(mmResult.getMaxMin());
+            game.setMaxMinIndex(mmResult.getRowIndex());
+            game.setMinMaxIndex(mmResult.getColIndex());
         } else {
             var mixResult = probabilitySolver.solve(matrix);
             game.setGamePrice(mixResult.getGamePrice());
@@ -114,9 +164,9 @@ public class BraunRobinsonService implements IBraunRobinsonService {
     }
 
     private List<Double> copyCol(double[][] matrix, int col) {
-        var colLength = matrix[col].length;
+        var colLength = matrix.length;
         return IntStream.range(0, colLength)
-                .mapToObj(j -> matrix[j][col])
+                .mapToObj(i -> matrix[i][col])
                 .collect(Collectors.toList());
     }
 
