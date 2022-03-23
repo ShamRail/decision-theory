@@ -12,9 +12,11 @@ import org.apache.commons.math3.optim.linear.NonNegativeConstraint;
 import org.apache.commons.math3.optim.linear.Relationship;
 import org.apache.commons.math3.optim.linear.SimplexSolver;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.springframework.stereotype.Component;
 
 import decision.theory.lab3.interfaces.IProbabilitySolver;
 
+@Component
 public class ProbabilitySolver implements IProbabilitySolver {
 
     @Override

@@ -1,22 +1,23 @@
 package decision.theory.lab3.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BraunRobinsonResult {
 
     private List<BraunRobinsonRow> steps;
-    
-    private int totalIterations; 
-    
+
+    private int totalIterations;
+
     private double minMax;
-    
+
     private double maxMin;
-    
+
     private double gamePrice;
-    
-    private List<Double> rowMixStrategies;
-    
-    private List<Double> colMixStrategies;
+
+    private List<Double> rowMixStrategies = Collections.emptyList();
+
+    private List<Double> colMixStrategies = Collections.emptyList();
 
     public BraunRobinsonResult(List<BraunRobinsonRow> steps) {
         this.steps = steps;
@@ -78,5 +79,5 @@ public class BraunRobinsonResult {
     public void setColMixStrategies(List<Double> colMixStrategies) {
         this.colMixStrategies = colMixStrategies;
     }
-    
+
 }

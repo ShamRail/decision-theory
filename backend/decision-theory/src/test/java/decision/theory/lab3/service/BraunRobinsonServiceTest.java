@@ -21,7 +21,7 @@ public class BraunRobinsonServiceTest {
             {5, 5, 6}
         };
         var iterationAmount = 3;
-        var service = new BraunRobinsonService();
+        var service = new BraunRobinsonService(new ProbabilitySolver());
         var expResult = List.of(
                 new BraunRobinsonRow(1, List.of(6.0, 4.0, 5.0), List.of(6.0, 2.0, 5.0), 2, 4, 1, 6),
                 new BraunRobinsonRow(2, List.of(12.0, 8.0, 10.0), List.of(10.0, 5.0, 12.0), 2, 4, 3, 6),
@@ -39,7 +39,7 @@ public class BraunRobinsonServiceTest {
             {2, 5, 10}
         };
         var iterationAmount = 2;
-        var service = new BraunRobinsonService();
+        var service = new BraunRobinsonService(new ProbabilitySolver());
         var expResult = List.of(
                 new BraunRobinsonRow(1, List.of(7.0, 1.0, 5.0), List.of(3.0, 7.0, 9.0), 2, 1, 3, 9),
                 new BraunRobinsonRow(2, List.of(16.0, 1.0, 15.0), List.of(9.0, 8.0, 9.0), 2, 0.5, 1, 4.5)
@@ -57,7 +57,7 @@ public class BraunRobinsonServiceTest {
             {78, 4, 17, 28}
         };
         var iterationAmount = 3;
-        var service = new BraunRobinsonService();
+        var service = new BraunRobinsonService(new ProbabilitySolver());
         
         List<BraunRobinsonRow> result = service.calculate(matrix, iterationAmount, getInitStrategy(0, 0)).getSteps();
 
@@ -80,7 +80,7 @@ public class BraunRobinsonServiceTest {
         };
 
         var epsilon = 0.0001;
-        var service = new BraunRobinsonService();
+        var service = new BraunRobinsonService(new ProbabilitySolver());
         var result = service.calculate(matrix, epsilon, getInitStrategy(0, 0)).getSteps();
         var lastLine = result.get(result.size() - 1);
         
@@ -97,7 +97,7 @@ public class BraunRobinsonServiceTest {
             {2, 5, 10}
         };
         var iterationAmount = 3;
-        var service = new BraunRobinsonService();
+        var service = new BraunRobinsonService(new ProbabilitySolver());
         var expResult = List.of(
                 new BraunRobinsonRow(1, List.of(7.0, 1.0, 5.0), List.of(3.0, 7.0, 9.0), 2, 1, 3, 9),
                 new BraunRobinsonRow(2, List.of(16.0, 1.0, 15.0), List.of(9.0, 8.0, 9.0), 2, 0.5, 1, 4.5)

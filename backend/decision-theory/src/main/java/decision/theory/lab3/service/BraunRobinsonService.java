@@ -11,11 +11,18 @@ import org.springframework.stereotype.Service;
 
 import decision.theory.lab3.interfaces.IBraunRobinsonService;
 import decision.theory.lab3.interfaces.IInitStrategy;
+import decision.theory.lab3.interfaces.IProbabilitySolver;
 import decision.theory.lab3.model.BraunRobinsonResult;
 import decision.theory.lab3.model.BraunRobinsonRow;
 
 @Service
 public class BraunRobinsonService implements IBraunRobinsonService {
+
+    private final IProbabilitySolver probabilitySolver;
+
+    public BraunRobinsonService(IProbabilitySolver probabilitySolver) {
+        this.probabilitySolver = probabilitySolver;
+    }
 
     @Override
     public BraunRobinsonResult calculate(double[][] matrix, int iterationAmount, IInitStrategy strategy) {
@@ -50,62 +57,28 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         var max = findExtremum(row, (el1, el2) -> el1 > el2);
         var previousRow = new BraunRobinsonRow(1, col, row, min.index + 1, min.value, max.index + 1, max.value);
         result.add(previousRow);
-        System.out.printf("Пусть при k = 1 i1 = %d, j1 = %d %n%n", firstCol + 1, firstRow + 1);
-        IntStream.range(0, colCount)
-                .forEach(i -> System.out.printf("g1%d = a%d%d = %.2f%n", i + 1, i + 1, firstCol + 1, col.get(i)));
-        System.out.println();
-        IntStream.range(0, rowCount)
-                .forEach(j -> System.out.printf("h1%d = a%d%d = %.2f%n", j + 1, firstRow + 1, j + 1, row.get(j)));
-        System.out.println();
-        System.out.printf("M1 = min {%s} = %.2f%n",
-                col.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), min.value);
-        System.out.printf("V1 = max {%s} = %.2f%n",
-                row.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), max.value);
-        System.out.println();
-        System.out.printf("i1 = %d, j1 = %d %n%n", min.index + 1, max.index + 1);
-
         var deltaCol = Double.MAX_VALUE;
         var deltaRow = Double.MIN_VALUE;
         for (int k = 2; (!stopByPrecision && k <= precisionOrIterations)
                 || (stopByPrecision && (deltaCol > precisionOrIterations || deltaRow > precisionOrIterations)); k++) {
-            System.out.printf("k = %d%n%n", k);
             var colResult = new ArrayList<Double>(previousRow.getColResult());
             var rowResult = new ArrayList<Double>(previousRow.getRowResult());
             for (int i = 0; i < rowCount; i++) {
-                System.out.printf("g_%d_%d = g_%d_%d + a%d%d = %.2f + %.2f = %.2f%n", k, i + 1, k - 1, i + 1, i + 1,
-                        max.index + 1, colResult.get(i), matrix[i][max.index], colResult.get(i) + matrix[i][max.index]);
                 colResult.set(i, colResult.get(i) + matrix[i][max.index]);
             }
-            System.out.println();
-
             for (int j = 0; j < colCount; j++) {
-                System.out.printf("h_%d_%d = h_%d_%d + a%d%d = %.2f + %.2f = %.2f%n", k, j + 1, k - 1, j + 1,
-                        min.index + 1, j + 1, rowResult.get(j), matrix[min.index][j],
-                        rowResult.get(j) + matrix[min.index][j]);
                 rowResult.set(j, rowResult.get(j) + matrix[min.index][j]);
             }
-            System.out.println();
-
             min = findExtremum(colResult, (el1, el2) -> el1 < el2);
             max = findExtremum(rowResult, (el1, el2) -> el1 > el2);
             deltaCol = Math.abs(previousRow.getMin() - min.value / k);
             deltaRow = Math.abs(previousRow.getMax() - max.value / k);
-            previousRow = new BraunRobinsonRow(k, colResult, rowResult, min.index + 1, min.value / k, max.index + 1,
-                    max.value / k);
-
-            System.out.printf("M%d = min {%s} / %d = %.2f / %d = %.2f%n", k,
-                    colResult.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), k,
-                    min.value, k, min.value / k);
-            System.out.printf("V%d = max {%s} / %d = %.2f / %d = %.2f%n", k,
-                    rowResult.stream().map(v -> String.format("%.2f", v)).collect(Collectors.joining(", ")), k,
-                    max.value, k, max.value / k);
-            System.out.println();
-            System.out.printf("i%d = %d, j%d = %d %n%n", k, min.index + 1, k, max.index + 1);
-
+            previousRow = new BraunRobinsonRow(
+                    k, colResult, rowResult, min.index + 1, min.value / k, max.index + 1, max.value / k
+            );
             result.add(previousRow);
         }
-
-        return setMixGames(rowCount, colCount, setGameProperties(matrix, new BraunRobinsonResult(result)));
+        return setGameProperties(matrix, new BraunRobinsonResult(result));
     }
 
     private Extremum findExtremum(List<Double> elements, BiPredicate<Double, Double> condition) {
@@ -123,25 +96,28 @@ public class BraunRobinsonService implements IBraunRobinsonService {
         var mmResult = new MaxMinInitStrategy().choose(matrix);
         game.setMaxMin(mmResult.getMaxMin());
         game.setMinMax(mmResult.getMinMax());
-        game.setGamePrice(matrix[mmResult.getRowIndex()][mmResult.getColIndex()]);
-        return game;
-    }
-
-    private BraunRobinsonResult setMixGames(int rowCount, int colCount, BraunRobinsonResult game) {
-//        game.setRowMixStrategies(
-//                Arrays.stream(randomService.generateFullGroup(rowCount)).mapToObj(d -> d).collect(Collectors.toList()));
-//        game.setColMixStrategies(
-//                Arrays.stream(randomService.generateFullGroup(colCount)).mapToObj(d -> d).collect(Collectors.toList()));
+        if (mmResult.getMaxMin() == mmResult.getMinMax()) {
+            game.setGamePrice(mmResult.getMaxMin());
+        } else {
+            var mixResult = probabilitySolver.solve(matrix);
+            game.setGamePrice(mixResult.getGamePrice());
+            game.setColMixStrategies(mixResult.getColResult());
+            game.setRowMixStrategies(mixResult.getRowResult());
+        }
         return game;
     }
 
     private List<Double> copyRow(double[] row) {
-        return Arrays.stream(row).mapToObj(d -> d).collect(Collectors.toList());
+        return Arrays.stream(row)
+                .mapToObj(d -> d)
+                .collect(Collectors.toList());
     }
 
     private List<Double> copyCol(double[][] matrix, int col) {
         var colLength = matrix[col].length;
-        return IntStream.range(0, colLength).mapToObj(j -> matrix[j][col]).collect(Collectors.toList());
+        return IntStream.range(0, colLength)
+                .mapToObj(j -> matrix[j][col])
+                .collect(Collectors.toList());
     }
 
     private static class Extremum {
